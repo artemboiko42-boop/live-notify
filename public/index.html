@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARTIK LIVE</title>
+<link rel="manifest" href="/manifest.webmanifest">
+<style>
+body{margin:0;font-family:Arial;background:#050816;color:#fff;text-align:center}
+.wrap{max-width:600px;margin:auto;padding:20px}
+.avatar{width:140px;height:140px;border-radius:50%;object-fit:cover;margin:10px auto;box-shadow:0 0 20px #ff2d55}
+.name{font-size:32px;font-weight:bold;color:#ff2d55}
+.desc{font-size:18px;margin:10px 0 20px}
+.btn{padding:15px;border:none;border-radius:12px;font-size:18px;margin:10px;width:100%;cursor:pointer}
+.red{background:#ff2d55;color:#fff}
+.blue{background:#2563eb;color:#fff}
+.card{background:#0f172a;padding:15px;border-radius:15px;margin-top:15px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<img src="/artik.jpg" class="avatar">
+<div class="name">ARTIK</div>
+<div class="desc">Привіт 👋 Радий тебе бачити.<br>Підключай сповіщення і не пропускай ефіри 🔴</div>
+
+<button class="btn red" onclick="subscribe()">Увімкнути сповіщення</button>
+<div id="status">Ще не підключено</div>
+
+<div class="card">
+<h3>📱 Android</h3>
+<p>Відкрий у Chrome → натисни кнопку → дозволити</p>
+</div>
+
+<div class="card">
+<h3>🍎 iPhone</h3>
+<p>Safari → Поділитися → На екран → відкрити → дозволити</p>
+</div>
+
+<a href="https://vt.tiktok.com/ZS9LbcHA4Y5rm-gOhw/" class="btn blue">Перейти в ефір</a>
+
+</div>
+
+<script>
+const PUBLIC_KEY = 'BIPSNPpNdxQaUs6PBPo_IQsD5paX5GgsrCTO7dmPv_osSR_VIvzTHbXhuabkN1qVzdecOUZaQzrTDNjZCXcOaHE';
+
+function urlBase64ToUint8Array(base64String){
+const padding='='.repeat((4-base64String.length%4)%4);
+const base64=(base64String+padding).replace(/-/g,'+').replace(/_/g,'/');
+const rawData=atob(base64);
+return Uint8Array.from([...rawData].map(c=>c.charCodeAt(0)));
+}
+
+async function subscribe(){
+try{
+const reg=await navigator.serviceWorker.register('/sw.js');
+let sub=await reg.pushManager.getSubscription();
+if(!sub){
+sub=await reg.pushManager.subscribe({
+userVisibleOnly:true,
+applicationServerKey:urlBase64ToUint8Array(PUBLIC_KEY)
+});
+}
+await fetch('/subscribe',{
+method:'POST',
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify(sub)
+});
+document.getElementById('status').innerHTML='✅ Підключено';
+}catch(e){
+document.getElementById('status').innerHTML='❌ Помилка';
+}
+}
+</script>
+
+</body>
+</html>

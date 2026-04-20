@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Адмін</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(255, 0, 80, 0.18), transparent 28%),
+        #050816;
+      color: #fff;
+    }
+    .wrap {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 28px 16px 40px;
+    }
+    .card {
+      background: rgba(12, 19, 42, 0.96);
+      border: 1px solid rgba(78, 103, 166, 0.28);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+    }
+    h1 {
+      margin-top: 0;
+      font-size: 36px;
+      line-height: 1.1;
+    }
+    p {
+      color: #c0cceb;
+      line-height: 1.6;
+      font-size: 18px;
+    }
+    label {
+      display: block;
+      margin: 18px 0 8px;
+      font-size: 18px;
+      font-weight: 700;
+    }
+    input {
+      width: 100%;
+      padding: 16px 18px;
+      border-radius: 16px;
+      border: 1px solid rgba(88, 113, 177, 0.34);
+      background: rgba(7, 13, 30, 0.94);
+      color: white;
+      font-size: 18px;
+      outline: none;
+    }
+    button {
+      width: 100%;
+      margin-top: 22px;
+      padding: 18px 20px;
+      border: none;
+      border-radius: 18px;
+      background: linear-gradient(90deg, #ff245c, #ff4e89);
+      color: white;
+      font-size: 22px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 16px 36px rgba(255, 36, 92, 0.3);
+    }
+    .status {
+      margin-top: 16px;
+      background: rgba(7, 13, 30, 0.82);
+      border: 1px solid rgba(77, 100, 159, 0.28);
+      border-radius: 16px;
+      padding: 16px;
+      font-size: 18px;
+      line-height: 1.5;
+      min-height: 60px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>Керування ефіром</h1>
+      <p>Ця сторінка тільки для тебе. Глядачі її не бачать.</p>
+
+      <label for="secret">Пароль</label>
+      <input id="secret" type="password" placeholder="Введи пароль">
+
+      <label for="url">Посилання на ефір</label>
+      <input id="url" type="url" placeholder="Встав посилання на ефір">
+
+      <button id="sendBtn">Я в ефірі 🔴</button>
+
+      <div class="status" id="adminStatus">Готово до відправки.</div>
+    </div>
+  </div>
+
+  <script>
+    const sendBtn = document.getElementById('sendBtn');
+    const statusBox = document.getElementById('adminStatus');
+    const urlInput = document.getElementById('url');
+    const secretInput = document.getElementById('secret');
+
+    urlInput.value = 'https://vt.tiktok.com/ZS9LbcHA4Y5rm-gOhw/';
+
+    sendBtn.addEventListener('click', async () => {
+      try {
+        const resp = await fetch('/notify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            secret: secretInput.value,
+            url: urlInput.value
+          })
+        });
+
+        if (resp.status === 403) {
+          statusBox.innerHTML = '❌ Невірний пароль.';
+          return;
+        }
+
+        if (!resp.ok) {
+          throw new Error('Помилка відправки');
+        }
+
+        statusBox.innerHTML = '✅ Сповіщення відправлено.';
+      } catch (err) {
+        statusBox.innerHTML = '❌ Не вдалося відправити сповіщення.';
+      }
+    });
+  </script>
+</body>
+</html>

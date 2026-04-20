@@ -1,25 +1,8 @@
 {
-  "name": "Уведомления о прямом эфире",
-  "short_name": "В эфире",
-  "description": "Получай push-уведомления, когда автор выходит в прямой эфир.",
-  "start_url": "/",
-  "scope": "/",
-  "display": "standalone",
-  "background_color": "#0b1220",
-  "theme_color": "#0f172a",
-  "id": "/",
-  "icons": [
-    {
-      "src": "/icons/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "/icons/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
-  ]
+"name":"Live",
+"short_name":"Live",
+"start_url":"/",
+"display":"standalone",
+"background_color":"#0f0f0f",
+"theme_color":"#ff0050"
 }

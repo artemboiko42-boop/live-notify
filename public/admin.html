@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<title>Admin</title>
+<style>
+body{background:#0f0f0f;color:white;text-align:center;font-family:sans-serif;}
+input{padding:10px;margin:10px;width:80%;}
+button{padding:15px;background:#ff0050;color:white;border:none;border-radius:10px;}
+</style>
+</head>
+<body>
+
+<h2>Адмін</h2>
+
+<input id="secret" placeholder="Пароль">
+<input id="url" placeholder="Посилання">
+
+<button onclick="send()">Я в ефірі 🔴</button>
+
+<script>
+async function send(){
+ const secret=document.getElementById('secret').value;
+ const url=document.getElementById('url').value;
+
+ await fetch('/notify',{
+  method:'POST',
+  headers:{'Content-Type':'application/json'},
+  body:JSON.stringify({secret,url})
+ });
+
+ alert('Відправлено');
+}
+</script>
+
+</body>
+</html>

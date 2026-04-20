@@ -1,20 +1,19 @@
-# Live Notify UA Final
+# ARTIK Live Notify
 
-## Що це
-Сайт для підписки на сповіщення про ефір.
+## Для глядачів
+Головна сторінка: `/`
 
-- Головна сторінка `/` — для глядачів
-- `/admin` — тільки для тебе
+## Для тебе
+Адмінка: `/admin`
 
-## Що потрібно в Render
-Environment Variables:
+## Environment Variables у Render
 - PORT=10000
 - ADMIN_SECRET=1234
-- LIVE_URL=твоя посилання на ефір
+- LIVE_URL=https://vt.tiktok.com/ZS9L7DfHMTgbR-ieGCG/
 - VAPID_SUBJECT=mailto:test@test.com
-- VAPID_PUBLIC_KEY=вже вставлений у `.env.example`
+- VAPID_PUBLIC_KEY=BIPSNPpNdxQaUs6PBPo_IQsD5paX5GgsrCTO7dmPv_osSR_VIvzTHbXhuabkN1qVzdecOUZaQzrTDNjZCXcOaHE
 - VAPID_PRIVATE_KEY=твій приватний ключ
 
 ## Важливо
-- На iPhone: Safari → Поділитися → На екран «Додому» → відкрити з іконки
-- На Android: відкривати краще в Chrome, не у вбудованому браузері Telegram
+- iPhone: Safari → Поділитися → На екран «Додому» → відкрити з іконки
+- Android: краще відкривати у Chrome, а не всередині Telegram

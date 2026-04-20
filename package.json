@@ -1,6 +1,6 @@
 {
-  "name": "live-notify-uk-final",
-  "version": "1.0.0",
+  "name": "artik-live-notify",
+  "version": "2.0.0",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"

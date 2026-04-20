@@ -37,7 +37,7 @@ app.post('/notify', async (req, res) => {
   const finalUrl = url || process.env.LIVE_URL;
 
   const payload = JSON.stringify({
-    title: '🔴 Я в ефірі',
+    title: '🔴 ARTIK в ефірі',
     body: 'Натисни, щоб перейти в ефір',
     url: finalUrl
   });
@@ -50,14 +50,12 @@ app.post('/notify', async (req, res) => {
       alive.push(sub);
     } catch (err) {
       const code = err && err.statusCode;
-      if (code !== 404 && code !== 410) {
-        alive.push(sub);
-      }
+      if (code !== 404 && code !== 410) alive.push(sub);
     }
   }
 
   subscriptions = alive;
-  res.json({ ok: true, sent: subscriptions.length, url: finalUrl });
+  res.json({ ok: true, url: finalUrl, subscribers: subscriptions.length });
 });
 
 app.listen(process.env.PORT || 3000, () => {

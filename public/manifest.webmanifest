@@ -4,5 +4,6 @@
   "start_url": "/",
   "display": "standalone",
   "background_color": "#040714",
-  "theme_color": "#040714"
+  "theme_color": "#040714",
+  "description": "Сповіщення про ефіри ARTIK"
 }

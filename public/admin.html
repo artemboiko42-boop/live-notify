@@ -9,9 +9,7 @@
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background:
-        radial-gradient(circle at top left, rgba(255, 0, 98, 0.18), transparent 28%),
-        #040714;
+      background: radial-gradient(circle at top left, rgba(255,0,98,0.18), transparent 28%), #040714;
       color: #fff;
     }
     .wrap {
@@ -88,6 +86,12 @@
       <label for="url">Посилання на ефір</label>
       <input id="url" type="url" value="https://vt.tiktok.com/ZS9L7DfHMTgbR-ieGCG/" placeholder="Встав посилання на ефір">
 
+      <label for="title">Заголовок сповіщення</label>
+      <input id="title" type="text" value="🔴 ARTIK в ефірі">
+
+      <label for="body">Текст сповіщення</label>
+      <input id="body" type="text" value="Натисни, щоб перейти в ефір">
+
       <button id="sendBtn">Я в ефірі 🔴</button>
       <div class="status" id="adminStatus">Готово до відправки.</div>
     </div>
@@ -96,8 +100,6 @@
   <script>
     const sendBtn = document.getElementById('sendBtn');
     const statusBox = document.getElementById('adminStatus');
-    const urlInput = document.getElementById('url');
-    const secretInput = document.getElementById('secret');
 
     sendBtn.addEventListener('click', async () => {
       try {
@@ -105,8 +107,10 @@
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            secret: secretInput.value,
-            url: urlInput.value
+            secret: document.getElementById('secret').value,
+            url: document.getElementById('url').value,
+            title: document.getElementById('title').value,
+            body: document.getElementById('body').value
           })
         });
 

@@ -98,10 +98,8 @@
   </div>
 
   <script>
-    const sendBtn = document.getElementById('sendBtn');
-    const statusBox = document.getElementById('adminStatus');
-
-    sendBtn.addEventListener('click', async () => {
+    document.getElementById('sendBtn').addEventListener('click', async () => {
+      const statusBox = document.getElementById('adminStatus');
       try {
         const resp = await fetch('/notify', {
           method: 'POST',
@@ -118,9 +116,7 @@
           statusBox.innerHTML = '❌ Невірний пароль.';
           return;
         }
-
         if (!resp.ok) throw new Error('send failed');
-
         statusBox.innerHTML = '✅ Сповіщення відправлено.';
       } catch (err) {
         statusBox.innerHTML = '❌ Не вдалося відправити сповіщення.';

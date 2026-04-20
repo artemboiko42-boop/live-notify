@@ -1,8 +1,10 @@
+
 {
-"name":"ARTIK",
-"short_name":"ARTIK",
-"start_url":"/",
-"display":"standalone",
-"background_color":"#050816",
-"theme_color":"#050816"
+  "name": "ARTIK LIVE",
+  "short_name": "ARTIK",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#040714",
+  "theme_color": "#040714",
+  "description": "Сповіщення про ефіри ARTIK"
 }

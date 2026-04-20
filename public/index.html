@@ -1,107 +1,377 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ARTIK LIVE</title>
-<link rel="manifest" href="/manifest.webmanifest">
-<style>
-body{margin:0;font-family:sans-serif;background:#050816;color:#fff;text-align:center}
-.wrap{max-width:700px;margin:auto;padding:20px}
-.avatar{width:160px;border-radius:50%;margin-top:20px;box-shadow:0 0 30px #ff2d55}
-.name{font-size:40px;color:#ff2d55;margin:10px 0}
-.btn{padding:18px;width:100%;border:none;border-radius:12px;font-size:20px;margin-top:12px}
-.red{background:#ff2d55;color:#fff}
-.blue{background:#2563eb;color:#fff}
-.install{background:#00c2ff;color:#000}
-.card{background:#0f172a;padding:20px;border-radius:16px;margin-top:15px}
-.hidden{display:none}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ARTIK LIVE</title>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="theme-color" content="#040714">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(255, 0, 98, 0.18), transparent 28%),
+        radial-gradient(circle at top right, rgba(0, 221, 255, 0.13), transparent 24%),
+        #040714;
+      color: #fff;
+    }
+    .wrap {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px 16px 56px;
+    }
+    .hero {
+      text-align: center;
+      margin: 6px 0 18px;
+    }
+    .avatar {
+      width: 190px;
+      height: 190px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid rgba(255,63,117,.28);
+      box-shadow: 0 0 42px rgba(255, 45, 106, .55);
+      margin-bottom: 14px;
+    }
+    .name {
+      font-size: 58px;
+      font-weight: 900;
+      line-height: 1;
+      color: #ff3466;
+      text-shadow: 0 0 20px rgba(255,52,102,.35);
+      margin-bottom: 10px;
+    }
+    .welcome {
+      font-size: 22px;
+      line-height: 1.5;
+      color: #f4f7ff;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+    .card {
+      background: rgba(9, 18, 48, 0.94);
+      border: 1px solid rgba(82, 109, 176, 0.25);
+      border-radius: 28px;
+      padding: 28px;
+      margin-bottom: 18px;
+      box-shadow: 0 18px 55px rgba(0,0,0,0.34);
+    }
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(18, 31, 72, 0.96);
+      border: 1px solid rgba(89, 116, 181, 0.26);
+      color: #e1ebff;
+      border-radius: 999px;
+      padding: 10px 16px;
+      font-weight: 700;
+      font-size: 20px;
+      margin-bottom: 14px;
+    }
+    h1 {
+      margin: 0 0 18px;
+      font-size: 54px;
+      line-height: 1.05;
+    }
+    .lead {
+      font-size: 22px;
+      line-height: 1.6;
+      color: #edf3ff;
+      margin-bottom: 14px;
+    }
+    .muted {
+      color: #b8c7e8;
+      font-size: 20px;
+      line-height: 1.65;
+    }
+    .btn {
+      width: 100%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 21px 18px;
+      border: none;
+      border-radius: 22px;
+      font-size: 25px;
+      font-weight: 800;
+      cursor: pointer;
+      text-decoration: none;
+      margin-top: 16px;
+      transition: transform .16s ease, box-shadow .16s ease;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn-primary {
+      background: linear-gradient(90deg, #ff245c, #ff4f8a);
+      color: #fff;
+      box-shadow: 0 20px 40px rgba(255, 36, 92, 0.28);
+    }
+    .btn-install {
+      background: linear-gradient(90deg, #00c2ff, #51d6ff);
+      color: #041120;
+      box-shadow: 0 18px 36px rgba(0, 183, 255, 0.28);
+    }
+    .btn-secondary {
+      background: linear-gradient(90deg, #2653d8, #3f79ff);
+      color: #fff;
+      box-shadow: 0 18px 36px rgba(43, 98, 255, 0.28);
+    }
+    .btn-ghost {
+      background: rgba(16, 28, 65, 0.94);
+      border: 1px solid rgba(82, 109, 176, 0.25);
+      color: #fff;
+      box-shadow: none;
+    }
+    .status {
+      margin-top: 16px;
+      background: rgba(5, 12, 34, 0.82);
+      border: 1px solid rgba(83, 106, 163, 0.28);
+      border-radius: 18px;
+      padding: 18px;
+      font-size: 22px;
+      line-height: 1.5;
+      min-height: 70px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+    .small-card {
+      background: rgba(9, 18, 48, 0.94);
+      border: 1px solid rgba(82, 109, 176, 0.25);
+      border-radius: 26px;
+      padding: 24px;
+    }
+    .small-card h3 {
+      margin: 0 0 16px;
+      font-size: 36px;
+    }
+    ol {
+      margin: 0;
+      padding-left: 28px;
+      font-size: 22px;
+      line-height: 1.75;
+      color: #f4f7ff;
+    }
+    .warn {
+      background: rgba(46, 10, 30, 0.92);
+      border-color: rgba(255, 94, 140, 0.22);
+    }
+    .live-note {
+      color: #d8e5ff;
+      font-size: 20px;
+      line-height: 1.65;
+      margin-top: 10px;
+    }
+    .hidden { display: none !important; }
+    @media (max-width: 760px) {
+      .avatar { width: 170px; height: 170px; }
+      .name { font-size: 54px; }
+      .welcome { font-size: 22px; }
+      h1 { font-size: 42px; }
+      .lead, .muted, .live-note, ol { font-size: 18px; }
+      .btn { font-size: 22px; padding: 18px 16px; }
+      .grid { grid-template-columns: 1fr; }
+      .small-card h3 { font-size: 30px; }
+    }
+  </style>
 </head>
 <body>
-<div class="wrap">
+  <div class="wrap">
+    <div class="hero">
+      <img class="avatar" src="/artik.jpg" alt="ARTIK">
+      <div class="name">ARTIK</div>
+      <div class="welcome">Привіт 👋 Радий тебе бачити.<br>Підключай сповіщення і не пропускай мої ефіри 🔴</div>
+    </div>
 
-<img src="/artik.jpg" class="avatar">
-<div class="name">ARTIK</div>
-<p>Привіт 👋 Підключай сповіщення і не пропускай ефіри 🔴</p>
+    <div id="fullView">
+      <div class="card">
+        <div class="tag">🔔 Сповіщення про ефір</div>
+        <h1>Отримуй сповіщення, коли я в ефірі</h1>
+        <p class="lead">Людина відкриває сайт один раз, вмикає сповіщення — і потім отримує повідомлення, коли я виходжу в прямий ефір.</p>
+        <p class="muted">Для iPhone потрібно додати сайт на екран «Додому» і відкрити його звідти. Для Android краще встановити сайт як застосунок на головний екран, а потім уже вмикати сповіщення.</p>
 
-<div id="setup">
+        <button class="btn btn-primary" id="subscribeBtn">Увімкнути сповіщення</button>
+        <button class="btn btn-install hidden" id="installBtn">Встановити застосунок 📲</button>
+        <div class="status" id="status">Ще не підключено.</div>
+        <div class="live-note">Якщо кнопка встановлення не з’явилась: відкрий сайт у Chrome → натисни ⋮ → Додати на головний екран.</div>
+      </div>
 
-<div class="card">
-<h2>Отримуй сповіщення</h2>
-<p>Натисни кнопку один раз — і будеш отримувати повідомлення коли я в ефірі.</p>
+      <div class="grid">
+        <div class="small-card">
+          <h3>🍎 iPhone</h3>
+          <ol>
+            <li>Відкрий сайт у <b>Safari</b></li>
+            <li>Натисни <b>Поділитися</b></li>
+            <li>Обери <b>На екран «Додому»</b></li>
+            <li>Відкрий сайт з іконки на екрані</li>
+            <li>Натисни <b>Увімкнути сповіщення</b></li>
+          </ol>
+          <div class="live-note">Важливо: на iPhone сповіщення працюють тільки після додавання сайту на екран.</div>
+        </div>
 
-<button class="btn red" id="subBtn">Увімкнути сповіщення</button>
+        <div class="small-card">
+          <h3>📱 Android</h3>
+          <ol>
+            <li>Відкрий сайт у <b>Chrome</b></li>
+            <li>Натисни <b>Встановити застосунок</b></li>
+            <li>Відкрий застосунок з головного екрана</li>
+            <li>Натисни <b>Увімкнути сповіщення</b></li>
+            <li>Дозволь сповіщення</li>
+          </ol>
+          <div class="live-note">Після цього сайт буде працювати як окремий застосунок на телефоні.</div>
+        </div>
+      </div>
 
-<button class="btn install hidden" id="installBtn">Встановити застосунок 📲</button>
+      <div class="card warn">
+        <div class="tag">⚠️ Якщо відкрив з Telegram</div>
+        <p class="muted"><b>Android:</b> натисни ⋮ → <b>Відкрити в Chrome</b><br><br><b>iPhone:</b> відкрий сайт у <b>Safari</b></p>
+      </div>
 
-<div id="status">Ще не підключено</div>
+      <div class="card">
+        <div class="tag">🔗 Ефір</div>
+        <h1 style="font-size:52px;">Перейти в ефір</h1>
+        <p class="lead">Коли ефір уже запущений, натисни кнопку нижче.</p>
+        <a class="btn btn-secondary" id="liveLink" href="#" target="_blank" rel="noopener noreferrer">Перейти в ефір</a>
+      </div>
+    </div>
 
-<p>Якщо кнопка не зʼявилась:<br>
-Chrome → ⋮ → Додати на головний екран</p>
+    <div id="connectedView" class="hidden">
+      <div class="card">
+        <div class="tag">✅ Підключено</div>
+        <h1>Сповіщення увімкнено</h1>
+        <p class="lead">Тепер ти будеш отримувати сповіщення, коли я запускаю ефір.</p>
+        <a class="btn btn-secondary" id="liveLinkCompact" href="#" target="_blank" rel="noopener noreferrer">Перейти в ефір</a>
+        <button class="btn btn-primary" id="unsubscribeBtn">Вимкнути сповіщення</button>
+        <button class="btn btn-ghost" id="showGuideBtn">Показати інструкцію ще раз</button>
+      </div>
+    </div>
+  </div>
 
-</div>
+  <script>
+    const PUBLIC_KEY = 'BIPSNPpNdxQaUs6PBPo_IQsD5paX5GgsrCTO7dmPv_osSR_VIvzTHbXhuabkN1qVzdecOUZaQzrTDNjZCXcOaHE';
+    const DEFAULT_LIVE_URL = 'https://vt.tiktok.com/ZS9L7DfHMTgbR-ieGCG/';
+    const statusBox = document.getElementById('status');
+    const subscribeBtn = document.getElementById('subscribeBtn');
+    const installBtn = document.getElementById('installBtn');
+    const unsubscribeBtn = document.getElementById('unsubscribeBtn');
+    const showGuideBtn = document.getElementById('showGuideBtn');
+    const fullView = document.getElementById('fullView');
+    const connectedView = document.getElementById('connectedView');
+    const liveLink = document.getElementById('liveLink');
+    const liveLinkCompact = document.getElementById('liveLinkCompact');
+    let deferredPrompt = null;
 
-<div class="card">
-<b>iPhone</b><br>
-Safari → Поділитися → На екран → відкрити → увімкнути
-</div>
+    function urlBase64ToUint8Array(base64String) {
+      const padding = '='.repeat((4 - base64String.length % 4) % 4);
+      const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+      const rawData = atob(base64);
+      return Uint8Array.from([...rawData].map(char => char.charCodeAt(0)));
+    }
 
-<div class="card">
-<b>Android</b><br>
-Chrome → Встановити застосунок → відкрити → увімкнути
-</div>
+    function setLiveUrl(url) {
+      const finalUrl = url || DEFAULT_LIVE_URL;
+      liveLink.href = finalUrl;
+      liveLinkCompact.href = finalUrl;
+    }
 
-</div>
+    function showConnected() {
+      fullView.classList.add('hidden');
+      connectedView.classList.remove('hidden');
+      localStorage.setItem('liveNotifySubscribed', '1');
+    }
 
-<div id="done" class="hidden">
-<h2>✅ Підключено</h2>
-<a href="https://vt.tiktok.com/ZS9L7DfHMTgbR-ieGCG/" class="btn blue">Перейти в ефір</a>
-<button class="btn red" onclick="unsub()">Вимкнути</button>
-<button class="btn" onclick="reset()">Показати інструкцію</button>
-</div>
+    function showGuide() {
+      connectedView.classList.add('hidden');
+      fullView.classList.remove('hidden');
+    }
 
-</div>
+    fetch('/config')
+      .then(r => r.json())
+      .then(data => setLiveUrl(data && data.liveUrl))
+      .catch(() => setLiveUrl(DEFAULT_LIVE_URL));
 
-<script>
-let deferredPrompt;
+    if (localStorage.getItem('liveNotifySubscribed') === '1') {
+      showConnected();
+    }
 
-window.addEventListener('beforeinstallprompt', e=>{
-e.preventDefault();
-deferredPrompt=e;
-document.getElementById('installBtn').classList.remove('hidden');
-});
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      installBtn.classList.remove('hidden');
+    });
 
-document.getElementById('installBtn').onclick=async ()=>{
-if(!deferredPrompt) return;
-deferredPrompt.prompt();
-deferredPrompt=null;
-};
+    installBtn.addEventListener('click', async () => {
+      if (!deferredPrompt) {
+        statusBox.innerHTML = '📲 Якщо кнопка не спрацювала: відкрий сайт у Chrome → натисни ⋮ → Додати на головний екран.';
+        return;
+      }
+      deferredPrompt.prompt();
+      const result = await deferredPrompt.userChoice;
+      if (result.outcome === 'accepted') {
+        statusBox.innerHTML = '✅ Застосунок встановлено. Тепер відкрий його з головного екрана та увімкни сповіщення.';
+      }
+      deferredPrompt = null;
+      installBtn.classList.add('hidden');
+    });
 
-function showDone(){
-localStorage.setItem('sub','1');
-document.getElementById('setup').classList.add('hidden');
-document.getElementById('done').classList.remove('hidden');
-}
+    subscribeBtn.addEventListener('click', async () => {
+      try {
+        if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+          statusBox.innerHTML = 'На цьому пристрої або в цьому браузері push-сповіщення не підтримуються.';
+          return;
+        }
 
-document.getElementById('subBtn').onclick=()=>{
-showDone();
-};
+        const reg = await navigator.serviceWorker.register('/sw.js');
+        let sub = await reg.pushManager.getSubscription();
 
-function unsub(){
-localStorage.removeItem('sub');
-location.reload();
-}
+        if (!sub) {
+          sub = await reg.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: urlBase64ToUint8Array(PUBLIC_KEY)
+          });
+        }
 
-function reset(){
-localStorage.removeItem('sub');
-location.reload();
-}
+        const resp = await fetch('/subscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(sub)
+        });
 
-if(localStorage.getItem('sub')){
-showDone();
-}
-</script>
+        if (!resp.ok) throw new Error('subscribe failed');
+        showConnected();
+      } catch (err) {
+        statusBox.innerHTML = '❌ Не вдалося підключити сповіщення. Відкрий сайт у Chrome або Safari та спробуй ще раз.';
+      }
+    });
 
+    unsubscribeBtn.addEventListener('click', async () => {
+      try {
+        const reg = await navigator.serviceWorker.getRegistration();
+        if (reg && reg.pushManager) {
+          const sub = await reg.pushManager.getSubscription();
+          if (sub) {
+            await fetch('/unsubscribe', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(sub)
+            });
+            await sub.unsubscribe();
+          }
+        }
+      } catch (err) {
+      }
+      localStorage.removeItem('liveNotifySubscribed');
+      location.reload();
+    });
+
+    showGuideBtn.addEventListener('click', () => {
+      showGuide();
+      statusBox.innerHTML = '✅ Ти вже підключений. За бажанням можеш ще раз подивитися інструкцію.';
+    });
+  </script>
 </body>
 </html>

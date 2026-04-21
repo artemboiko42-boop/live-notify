@@ -1,9 +1,9 @@
-
 require('dotenv').config();
 const express = require('express');
 const webpush = require('web-push');
 const bodyParser = require('body-parser');
 const path = require('path');
+const { GoogleAuth } = require('google-auth-library');
 
 const app = express();
 app.use(bodyParser.json({ limit: '1mb' }));
@@ -16,6 +16,57 @@ webpush.setVapidDetails(
   process.env.VAPID_PUBLIC_KEY,
   process.env.VAPID_PRIVATE_KEY
 );
+
+async function getAccessToken() {
+  const auth = new GoogleAuth({
+    credentials: {
+      client_email: process.env.FIREBASE_CLIENT_EMAIL,
+      private_key: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+    },
+    scopes: ['https://www.googleapis.com/auth/firebase.messaging'],
+  });
+
+  const client = await auth.getClient();
+  const tokenResponse = await client.getAccessToken();
+  return tokenResponse.token;
+}
+
+async function sendFirebasePush({ title, body, url }) {
+  const accessToken = await getAccessToken();
+
+  const message = {
+    message: {
+      topic: 'all',
+      notification: {
+        title: title || '🔴 ARTIK в ефірі',
+        body: body || 'Натисни, щоб перейти в ефір',
+      },
+      data: {
+        url: url || process.env.LIVE_URL || '',
+      },
+    },
+  };
+
+  const response = await fetch(
+    `https://fcm.googleapis.com/v1/projects/${process.env.FIREBASE_PROJECT_ID}/messages:send`,
+    {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(message),
+    }
+  );
+
+  const text = await response.text();
+
+  if (!response.ok) {
+    throw new Error(`FCM error: ${text}`);
+  }
+
+  return text;
+}
 
 app.get('/admin', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'admin.html'));
@@ -52,9 +103,12 @@ app.post('/notify', async (req, res) => {
   }
 
   const finalUrl = url || process.env.LIVE_URL;
+  const finalTitle = title || '🔴 ARTIK в ефірі';
+  const finalBody = body || 'Натисни, щоб перейти в ефір';
+
   const payload = JSON.stringify({
-    title: title || '🔴 ARTIK в ефірі',
-    body: body || 'Натисни, щоб перейти в ефір',
+    title: finalTitle,
+    body: finalBody,
     url: finalUrl
   });
 
@@ -70,7 +124,27 @@ app.post('/notify', async (req, res) => {
   }
   subscriptions = alive;
 
-  res.json({ ok: true, subscribers: subscriptions.length, url: finalUrl });
+  let firebaseOk = true;
+  let firebaseResult = null;
+
+  try {
+    firebaseResult = await sendFirebasePush({
+      title: finalTitle,
+      body: finalBody,
+      url: finalUrl,
+    });
+  } catch (err) {
+    firebaseOk = false;
+    firebaseResult = err.message;
+  }
+
+  res.json({
+    ok: true,
+    webSubscribers: subscriptions.length,
+    firebaseOk,
+    firebaseResult,
+    url: finalUrl
+  });
 });
 
 app.get('*', (req, res) => {

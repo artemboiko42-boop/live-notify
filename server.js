@@ -10,6 +10,8 @@ app.use(bodyParser.json({ limit: '1mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 let subscriptions = [];
+let lastBattleNotifyAt = 0;
+const BATTLE_COOLDOWN_MS = 5 * 60 * 1000;
 
 webpush.setVapidDetails(
   process.env.VAPID_SUBJECT,
@@ -37,14 +39,12 @@ async function sendFirebasePush({ title, body, url }) {
   const message = {
     message: {
       topic: 'all',
-      notification: {
+      data: {
         title: title || '🔴 ARTIK в ефірі',
         body: body || 'Натисни, щоб перейти в ефір',
-      },
-      data: {
         url: url || process.env.LIVE_URL || '',
-      },
-    },
+      }
+    }
   };
 
   const response = await fetch(
@@ -144,6 +144,79 @@ app.post('/notify', async (req, res) => {
     firebaseOk,
     firebaseResult,
     url: finalUrl
+  });
+});
+
+app.post('/notify-battle', async (req, res) => {
+  const { secret, type } = req.body || {};
+
+  if (secret !== process.env.ADMIN_SECRET) {
+    return res.status(403).json({ ok: false, message: 'Forbidden' });
+  }
+
+  if (type !== 'win' && type !== 'lose') {
+    return res.status(400).json({ ok: false, message: 'Invalid type' });
+  }
+
+  const now = Date.now();
+  const remainingMs = BATTLE_COOLDOWN_MS - (now - lastBattleNotifyAt);
+
+  if (remainingMs > 0) {
+    const remainingMinutes = Math.ceil(remainingMs / 60000);
+    return res.json({
+      ok: false,
+      cooldown: true,
+      message: `Цю дію вже відправили. Спробуй знову приблизно через ${remainingMinutes} хв.`
+    });
+  }
+
+  lastBattleNotifyAt = now;
+
+  const finalTitle = 'ARTIK LIVE';
+  const finalBody =
+    type === 'win'
+      ? 'Потрібно забрати віни 🔥'
+      : 'Втрачаємо віни, заходь зараз ⚡';
+
+  const payload = JSON.stringify({
+    title: finalTitle,
+    body: finalBody,
+    url: process.env.LIVE_URL
+  });
+
+  const alive = [];
+  for (const sub of subscriptions) {
+    try {
+      await webpush.sendNotification(sub, payload);
+      alive.push(sub);
+    } catch (err) {
+      const code = err && err.statusCode;
+      if (code !== 404 && code !== 410) alive.push(sub);
+    }
+  }
+  subscriptions = alive;
+
+  let firebaseOk = true;
+  let firebaseResult = null;
+
+  try {
+    firebaseResult = await sendFirebasePush({
+      title: finalTitle,
+      body: finalBody,
+      url: process.env.LIVE_URL,
+    });
+  } catch (err) {
+    firebaseOk = false;
+    firebaseResult = err.message;
+  }
+
+  return res.json({
+    ok: true,
+    cooldown: false,
+    message: 'Сповіщення відправлено всім ✅',
+    webSubscribers: subscriptions.length,
+    firebaseOk,
+    firebaseResult
   });
 });
 

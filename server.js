@@ -148,10 +148,7 @@ app.post('/notify', async (req, res) => {
 });
 
 app.post('/notify-battle', async (req, res) => {
-  const { secret, type } = req.body || {};
-
-  if (secret !== process.env.ADMIN_SECRET) {
-    return res.status(403).json({ ok: false, message: 'Forbidden' });
+  const { type } = req.body || {};
   }
 
   if (type !== 'win' && type !== 'lose') {

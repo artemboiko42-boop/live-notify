@@ -149,7 +149,6 @@ app.post('/notify', async (req, res) => {
 
 app.post('/notify-battle', async (req, res) => {
   const { type } = req.body || {};
-  }
 
   if (type !== 'win' && type !== 'lose') {
     return res.status(400).json({ ok: false, message: 'Invalid type' });

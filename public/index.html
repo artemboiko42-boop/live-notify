@@ -151,7 +151,7 @@
       cursor: pointer;
       text-decoration: none;
       margin-top: 16px;
-      transition: transform .16s ease, box-shadow .16s ease;
+      transition: transform .16s ease, box-shadow .16s ease, background .2s ease;
     }
 
     .btn:hover {
@@ -161,6 +161,11 @@
     .btn-primary {
       background: linear-gradient(90deg, #ff245c, #ff4f8a);
       box-shadow: 0 18px 36px rgba(255, 36, 92, 0.30);
+    }
+
+    .btn-enabled {
+      background: linear-gradient(90deg, #16a34a, #22c55e);
+      box-shadow: 0 18px 36px rgba(34, 197, 94, 0.28);
     }
 
     .btn-live {
@@ -209,7 +214,16 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 12px;
-      margin-top: 8px;
+      margin-top: 2px;
+      margin-bottom: 4px;
+    }
+
+    .toggle-hint {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #bfd0f0;
+      text-align: center;
+      line-height: 1.5;
     }
 
     .status {
@@ -320,6 +334,15 @@
       </p>
 
       <button class="btn btn-primary" id="subscribeBtn">УВІМКНУТИ СПОВІЩЕННЯ</button>
+      <div class="toggle-hint" id="toggleHint">
+        Натисни ще раз на кнопку, щоб вимкнути сповіщення.
+      </div>
+
+      <div class="battle-row hidden" id="battleRowTop">
+        <button class="btn btn-win" id="battleWinBtnTop">ЗАБРАТИ ВІНИ</button>
+        <button class="btn btn-lose" id="battleLoseBtnTop">ВТРАЧАЄМО ВІНИ</button>
+      </div>
+
       <div class="status" id="status">Ще не підключено.</div>
 
       <a class="btn btn-live" id="liveLink" href="#" target="_blank" rel="noopener noreferrer">ПЕРЕЙТИ В ЕФІР</a>
@@ -369,12 +392,6 @@
 
       <a class="btn btn-live" id="liveLinkCompact" href="#" target="_blank" rel="noopener noreferrer">ПЕРЕЙТИ В ЕФІР</a>
 
-      <div class="battle-row">
-        <button class="btn btn-win" id="battleWinBtn">ЗАБРАТИ ВІНИ</button>
-        <button class="btn btn-lose" id="battleLoseBtn">ВТРАЧАЄМО ВІНИ</button>
-      </div>
-
-      <button class="btn btn-primary" id="unsubscribeBtn">ВИМКНУТИ СПОВІЩЕННЯ</button>
       <button class="btn btn-ghost" id="showGuideBtn">ПОКАЗАТИ ІНСТРУКЦІЮ ЩЕ РАЗ</button>
     </div>
   </div>
@@ -387,9 +404,9 @@
     const statusBox = document.getElementById('status');
     const subscribeBtn = document.getElementById('subscribeBtn');
     const installBtn = document.getElementById('installBtn');
-    const unsubscribeBtn = document.getElementById('unsubscribeBtn');
     const showGuideBtn = document.getElementById('showGuideBtn');
     const shareBtn = document.getElementById('shareBtn');
+    const toggleHint = document.getElementById('toggleHint');
 
     const iphoneTab = document.getElementById('iphoneTab');
     const androidTab = document.getElementById('androidTab');
@@ -400,10 +417,13 @@
     const liveLink = document.getElementById('liveLink');
     const liveLinkCompact = document.getElementById('liveLinkCompact');
 
-    const battleWinBtn = document.getElementById('battleWinBtn');
-    const battleLoseBtn = document.getElementById('battleLoseBtn');
+    const battleRowTop = document.getElementById('battleRowTop');
+    const battleWinBtnTop = document.getElementById('battleWinBtnTop');
+    const battleLoseBtnTop = document.getElementById('battleLoseBtnTop');
 
     let deferredPrompt = null;
+    let currentPlatform = 'iphone';
+    let currentSubscription = null;
 
     function urlBase64ToUint8Array(base64String) {
       const padding = '='.repeat((4 - base64String.length % 4) % 4);
@@ -418,9 +438,26 @@
       liveLinkCompact.href = finalUrl;
     }
 
+    function updateSubscribeUi(enabled) {
+      if (enabled) {
+        subscribeBtn.textContent = 'СПОВІЩЕННЯ УВІМКНЕНО';
+        subscribeBtn.classList.remove('btn-primary');
+        subscribeBtn.classList.add('btn-enabled');
+        statusBox.innerHTML = '✅ Сповіщення увімкнено.';
+        battleRowTop.classList.remove('hidden');
+        localStorage.setItem('liveNotifySubscribed', '1');
+      } else {
+        subscribeBtn.textContent = 'УВІМКНУТИ СПОВІЩЕННЯ';
+        subscribeBtn.classList.remove('btn-enabled');
+        subscribeBtn.classList.add('btn-primary');
+        statusBox.innerHTML = 'Ще не підключено.';
+        battleRowTop.classList.add('hidden');
+        localStorage.removeItem('liveNotifySubscribed');
+      }
+    }
+
     function showConnected() {
       connectedView.classList.remove('hidden');
-      localStorage.setItem('liveNotifySubscribed', '1');
     }
 
     function showMainView() {
@@ -428,6 +465,7 @@
     }
 
     function setPlatform(platform) {
+      currentPlatform = platform;
       localStorage.setItem('preferredPlatform', platform);
 
       if (platform === 'iphone') {
@@ -437,6 +475,7 @@
         androidGuide.classList.add('hidden');
         subscribeBtn.classList.remove('hidden');
         statusBox.classList.remove('hidden');
+        toggleHint.classList.remove('hidden');
         installBtn.classList.add('hidden');
       } else {
         androidTab.classList.add('active');
@@ -445,6 +484,8 @@
         iphoneGuide.classList.add('hidden');
         subscribeBtn.classList.add('hidden');
         statusBox.classList.add('hidden');
+        toggleHint.classList.add('hidden');
+        battleRowTop.classList.add('hidden');
         installBtn.classList.remove('hidden');
       }
     }
@@ -469,6 +510,62 @@
       }
     }
 
+    async function getCurrentSubscription() {
+      if (!('serviceWorker' in navigator) || !('PushManager' in window)) return null;
+      const reg = await navigator.serviceWorker.register('/sw.js');
+      return await reg.pushManager.getSubscription();
+    }
+
+    async function subscribePush() {
+      if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+        statusBox.innerHTML = 'На цьому пристрої або в цьому браузері push-сповіщення не підтримуються.';
+        return;
+      }
+
+      const reg = await navigator.serviceWorker.register('/sw.js');
+      let sub = await reg.pushManager.getSubscription();
+
+      if (!sub) {
+        sub = await reg.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: urlBase64ToUint8Array(PUBLIC_KEY)
+        });
+      }
+
+      const resp = await fetch('/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(sub)
+      });
+
+      if (!resp.ok) throw new Error('subscribe failed');
+
+      currentSubscription = sub;
+      updateSubscribeUi(true);
+      showConnected();
+    }
+
+    async function unsubscribePush() {
+      try {
+        const reg = await navigator.serviceWorker.getRegistration();
+        if (reg && reg.pushManager) {
+          const sub = await reg.pushManager.getSubscription();
+          if (sub) {
+            await fetch('/unsubscribe', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(sub)
+            });
+            await sub.unsubscribe();
+          }
+        }
+      } catch (err) {}
+
+      currentSubscription = null;
+      updateSubscribeUi(false);
+      showMainView();
+    }
+
     fetch('/config')
       .then(r => r.json())
       .then(data => setLiveUrl(data && data.liveUrl))
@@ -477,13 +574,26 @@
     const savedPlatform = localStorage.getItem('preferredPlatform') || 'iphone';
     setPlatform(savedPlatform);
 
-    if (localStorage.getItem('liveNotifySubscribed') === '1') {
-      showConnected();
-    }
+    getCurrentSubscription()
+      .then(sub => {
+        currentSubscription = sub;
+        if (sub) {
+          updateSubscribeUi(true);
+          showConnected();
+        } else {
+          updateSubscribeUi(false);
+        }
+      })
+      .catch(() => {
+        updateSubscribeUi(false);
+      });
 
     iphoneTab.addEventListener('click', () => {
       showMainView();
       setPlatform('iphone');
+      if (currentSubscription) {
+        battleRowTop.classList.remove('hidden');
+      }
     });
 
     androidTab.addEventListener('click', () => {
@@ -520,67 +630,30 @@
 
     subscribeBtn.addEventListener('click', async () => {
       try {
-        if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
-          statusBox.innerHTML = 'На цьому пристрої або в цьому браузері push-сповіщення не підтримуються.';
-          return;
+        if (currentSubscription) {
+          await unsubscribePush();
+        } else {
+          await subscribePush();
         }
-
-        const reg = await navigator.serviceWorker.register('/sw.js');
-        let sub = await reg.pushManager.getSubscription();
-
-        if (!sub) {
-          sub = await reg.pushManager.subscribe({
-            userVisibleOnly: true,
-            applicationServerKey: urlBase64ToUint8Array(PUBLIC_KEY)
-          });
-        }
-
-        const resp = await fetch('/subscribe', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(sub)
-        });
-
-        if (!resp.ok) throw new Error('subscribe failed');
-
-        statusBox.innerHTML = '✅ Сповіщення увімкнено.';
-        showConnected();
       } catch (err) {
-        statusBox.innerHTML = '❌ Не вдалося підключити сповіщення. Відкрий сайт у Safari та спробуй ще раз.';
+        statusBox.innerHTML = '❌ Не вдалося змінити стан сповіщень. Відкрий сайт у Safari та спробуй ще раз.';
       }
-    });
-
-    unsubscribeBtn.addEventListener('click', async () => {
-      try {
-        const reg = await navigator.serviceWorker.getRegistration();
-        if (reg && reg.pushManager) {
-          const sub = await reg.pushManager.getSubscription();
-          if (sub) {
-            await fetch('/unsubscribe', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(sub)
-            });
-            await sub.unsubscribe();
-          }
-        }
-      } catch (err) {}
-
-      localStorage.removeItem('liveNotifySubscribed');
-      location.reload();
     });
 
     showGuideBtn.addEventListener('click', () => {
       showMainView();
       setPlatform('iphone');
+      if (currentSubscription) {
+        battleRowTop.classList.remove('hidden');
+      }
       statusBox.innerHTML = '✅ Ти вже підключений. За бажанням можеш ще раз подивитися інструкцію.';
     });
 
-    battleWinBtn.addEventListener('click', () => {
+    battleWinBtnTop.addEventListener('click', () => {
       sendBattle('win');
     });
 
-    battleLoseBtn.addEventListener('click', () => {
+    battleLoseBtnTop.addEventListener('click', () => {
       sendBattle('lose');
     });
 

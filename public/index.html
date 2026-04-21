@@ -1,235 +1,605 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ARTIK LIVE</title>
-<link rel="manifest" href="/manifest.webmanifest">
-<meta name="theme-color" content="#040714">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ARTIK LIVE</title>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="theme-color" content="#040714">
+  <style>
+    * { box-sizing: border-box; }
 
-<style>
-*{box-sizing:border-box}
-body{
-margin:0;
-font-family:Arial;
-background:
-radial-gradient(circle at top left, rgba(255,0,98,0.18), transparent 28%),
-radial-gradient(circle at top right, rgba(0,221,255,0.13), transparent 24%),
-#040714;
-color:#fff;
-}
-.wrap{max-width:760px;margin:0 auto;padding:24px 16px 56px}
-.hero{text-align:center;margin-bottom:22px}
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(255, 0, 98, 0.18), transparent 28%),
+        radial-gradient(circle at top right, rgba(0, 221, 255, 0.13), transparent 24%),
+        #040714;
+      color: #fff;
+    }
 
-.live-badge{
-background:linear-gradient(90deg,#ff245c,#ff4f8a);
-padding:10px 18px;
-border-radius:999px;
-font-weight:800;
-display:inline-block;
-margin-bottom:16px;
-animation:blink 1s infinite alternate;
-}
-@keyframes blink{from{opacity:1}to{opacity:.5}}
+    .wrap {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 24px 16px 56px;
+    }
 
-.title{font-size:42px;font-weight:900;margin-bottom:10px}
+    .hero {
+      text-align: center;
+      margin-top: 8px;
+      margin-bottom: 22px;
+    }
 
-.card{
-background:rgba(9,18,48,0.94);
-border-radius:24px;
-padding:20px;
-margin-bottom:16px;
-}
+    .avatar {
+      width: 180px;
+      height: 180px;
+      border-radius: 28px;
+      object-fit: cover;
+      border: 3px solid rgba(255, 63, 117, .34);
+      box-shadow:
+        0 0 34px rgba(255, 45, 106, .45),
+        0 0 65px rgba(0, 229, 255, .15);
+      margin-bottom: 18px;
+    }
 
-.btn{
-width:100%;
-padding:18px;
-border:none;
-border-radius:20px;
-font-weight:800;
-font-size:20px;
-margin-top:12px;
-cursor:pointer;
-}
+    .live-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: linear-gradient(90deg, #ff245c, #ff4f8a);
+      color: #fff;
+      padding: 11px 18px;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: 18px;
+      margin-bottom: 18px;
+      box-shadow: 0 0 25px rgba(255, 36, 92, 0.45);
+      animation: blink 1s infinite alternate;
+    }
 
-.btn-live{
-background:#00d5ff;
-color:#000;
-animation:pulse .8s infinite alternate;
-}
-@keyframes pulse{from{transform:scale(1)}to{transform:scale(1.05)}}
+    @keyframes blink {
+      from { opacity: 1; transform: scale(1); }
+      to { opacity: .55; transform: scale(1.03); }
+    }
 
-.btn-main{background:#ff245c;color:#fff}
-.btn-share{background:#7c3aed}
-.btn-win{background:#f59e0b}
-.btn-lose{background:#ef4444}
+    .title {
+      font-size: 44px;
+      font-weight: 900;
+      line-height: 1;
+      color: #fff;
+      margin-bottom: 12px;
+      text-shadow:
+        0 0 18px rgba(255, 52, 102, .4),
+        0 0 28px rgba(0, 229, 255, .18);
+    }
 
-.row{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:10px;
-margin-top:12px;
-}
+    .subtitle {
+      color: #f3f6ff;
+      font-size: 20px;
+      line-height: 1.55;
+      max-width: 680px;
+      margin: 0 auto;
+    }
 
-.status{
-margin-top:12px;
-background:#111;
-padding:12px;
-border-radius:12px;
-}
+    .card {
+      background: rgba(9, 18, 48, 0.94);
+      border: 1px solid rgba(82, 109, 176, 0.25);
+      border-radius: 28px;
+      padding: 24px;
+      margin-bottom: 18px;
+      box-shadow: 0 18px 55px rgba(0,0,0,0.34);
+    }
 
-.hidden{display:none}
-</style>
+    .section-title {
+      font-size: 24px;
+      font-weight: 800;
+      margin: 0 0 14px;
+      color: #fff;
+    }
+
+    .section-text {
+      color: #dbe7ff;
+      font-size: 18px;
+      line-height: 1.65;
+      margin: 0;
+    }
+
+    .platform-switch {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .platform-btn {
+      border: none;
+      border-radius: 18px;
+      padding: 16px;
+      font-size: 18px;
+      font-weight: 800;
+      cursor: pointer;
+      color: #fff;
+      background: rgba(16, 28, 65, 0.94);
+      border: 1px solid rgba(82, 109, 176, 0.25);
+      transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+    }
+
+    .platform-btn.active {
+      background: linear-gradient(90deg, #20376d, #304f99);
+      border-color: rgba(111, 153, 255, .6);
+      box-shadow: 0 12px 30px rgba(50, 90, 200, .22);
+    }
+
+    .platform-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn {
+      width: 100%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      border: none;
+      border-radius: 22px;
+      padding: 19px 18px;
+      font-size: 21px;
+      font-weight: 800;
+      color: #fff;
+      cursor: pointer;
+      text-decoration: none;
+      margin-top: 16px;
+      transition: transform .16s ease, box-shadow .16s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      background: linear-gradient(90deg, #ff245c, #ff4f8a);
+      box-shadow: 0 18px 36px rgba(255, 36, 92, 0.30);
+    }
+
+    .btn-live {
+      background: linear-gradient(90deg, #00d5ff, #3ce3ff);
+      color: #041120;
+      box-shadow: 0 0 24px rgba(0, 213, 255, .42), 0 16px 34px rgba(0, 183, 255, 0.22);
+      animation: pulseLive .9s infinite alternate;
+    }
+
+    @keyframes pulseLive {
+      from { transform: scale(1); }
+      to { transform: scale(1.03); }
+    }
+
+    .btn-share {
+      background: linear-gradient(90deg, #6d28d9, #8b5cf6);
+      box-shadow: 0 18px 36px rgba(124, 58, 237, 0.28);
+    }
+
+    .btn-install {
+      background: linear-gradient(90deg, #00c2ff, #51d6ff);
+      color: #041120;
+      box-shadow: 0 18px 36px rgba(0, 183, 255, 0.28);
+    }
+
+    .btn-ghost {
+      background: rgba(16, 28, 65, 0.94);
+      border: 1px solid rgba(82, 109, 176, 0.25);
+      color: #fff;
+      box-shadow: none;
+    }
+
+    .btn-win {
+      background: linear-gradient(90deg, #f59e0b, #fbbf24);
+      color: #fff;
+      box-shadow: 0 18px 36px rgba(245, 158, 11, 0.28);
+    }
+
+    .btn-lose {
+      background: linear-gradient(90deg, #ef4444, #f87171);
+      color: #fff;
+      box-shadow: 0 18px 36px rgba(239, 68, 68, 0.28);
+    }
+
+    .battle-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .status {
+      margin-top: 16px;
+      background: rgba(5, 12, 34, 0.82);
+      border: 1px solid rgba(83, 106, 163, 0.28);
+      border-radius: 18px;
+      padding: 16px;
+      font-size: 18px;
+      line-height: 1.55;
+      min-height: 64px;
+      color: #f3f6ff;
+    }
+
+    .info-box {
+      margin-top: 18px;
+      background: rgba(10, 19, 48, 0.84);
+      border: 1px solid rgba(84, 109, 171, 0.23);
+      border-radius: 20px;
+      padding: 18px;
+    }
+
+    .info-box h3 {
+      margin: 0 0 12px;
+      font-size: 22px;
+    }
+
+    .info-box ol {
+      margin: 0;
+      padding-left: 22px;
+      font-size: 18px;
+      line-height: 1.75;
+      color: #edf3ff;
+    }
+
+    .note {
+      color: #bfd0f0;
+      font-size: 16px;
+      line-height: 1.6;
+      margin-top: 12px;
+    }
+
+    .warn {
+      background: rgba(46, 10, 30, 0.92);
+      border: 1px solid rgba(255, 94, 140, 0.22);
+      border-radius: 20px;
+      padding: 18px;
+      margin-top: 18px;
+    }
+
+    .warn strong {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 18px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 760px) {
+      .avatar {
+        width: 160px;
+        height: 160px;
+      }
+
+      .title {
+        font-size: 38px;
+      }
+
+      .subtitle,
+      .section-text,
+      .status,
+      .info-box ol {
+        font-size: 17px;
+      }
+
+      .btn {
+        font-size: 19px;
+        padding: 18px 16px;
+      }
+
+      .battle-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
-
 <body>
-<div class="wrap">
+  <div class="wrap">
+    <div class="hero">
+      <div class="live-badge">● LIVE</div>
+      <img class="avatar" src="/artik.jpg" alt="ARTIK">
+      <div class="title">ARTIK LIVE</div>
+      <div class="subtitle">
+        Увімкни сповіщення, щоб отримувати повідомлення, коли я в ефірі.
+      </div>
+    </div>
 
-<div class="hero">
-<div class="live-badge">● LIVE</div>
-<div class="title">ARTIK LIVE</div>
-</div>
+    <div class="card">
+      <div class="platform-switch">
+        <button class="platform-btn active" id="iphoneTab"> iPhone</button>
+        <button class="platform-btn" id="androidTab">🤖 Android</button>
+      </div>
 
-<div class="card">
+      <p class="section-text">
+        Людина відкриває сайт один раз, вмикає сповіщення — і потім отримує повідомлення, коли я виходжу в прямий ефір.
+      </p>
 
-<button class="btn btn-main" id="subscribeBtn">
-УВІМКНУТИ СПОВІЩЕННЯ
-</button>
+      <button class="btn btn-primary" id="subscribeBtn">УВІМКНУТИ СПОВІЩЕННЯ</button>
+      <div class="status" id="status">Ще не підключено.</div>
 
-<div class="status" id="status">Ще не підключено</div>
+      <a class="btn btn-live" id="liveLink" href="#" target="_blank" rel="noopener noreferrer">ПЕРЕЙТИ В ЕФІР</a>
 
-<a class="btn btn-live" id="liveLink" target="_blank">
-ПЕРЕЙТИ В ЕФІР
-</a>
+      <button class="btn btn-share" id="shareBtn">ПОДІЛИТИСЯ З ДРУЗЯМИ 🔗</button>
 
-<button class="btn btn-share" id="shareBtn">
-ПОДІЛИТИСЯ 🔗
-</button>
+      <button class="btn btn-install hidden" id="installBtn">ЗАВАНТАЖИТИ ДОДАТОК 📲</button>
 
-</div>
+      <div id="iphoneGuide" class="info-box">
+        <h3>🍎 iPhone</h3>
+        <ol>
+          <li>Відкрий сайт у <b>Safari</b></li>
+          <li>Натисни <b>Поділитися</b></li>
+          <li>Обери <b>На екран «Додому»</b></li>
+          <li>Відкрий сайт з іконки на екрані</li>
+          <li>Натисни <b>УВІМКНУТИ СПОВІЩЕННЯ</b></li>
+        </ol>
+        <div class="note">
+          Важливо: на iPhone сповіщення працюють тільки після додавання сайту на екран «Додому».
+        </div>
 
-<div id="connectedView" class="card hidden">
+        <div class="warn">
+          <strong>⚠️ Якщо відкрив сайт з Telegram</strong>
+          Спочатку відкрий його в <b>Safari</b>, і тільки потім додавай на екран «Додому».
+        </div>
+      </div>
 
-<div>✅ Сповіщення увімкнено</div>
+      <div id="androidGuide" class="info-box hidden">
+        <h3>📱 Android</h3>
+        <ol>
+          <li>Натисни кнопку нижче, щоб завантажити застосунок</li>
+          <li>Встанови APK на телефон</li>
+          <li>Відкрий застосунок</li>
+          <li>Натисни <b>УВІМКНУТИ СПОВІЩЕННЯ</b></li>
+        </ol>
+        <div class="note">
+          Для Android тепер краще використовувати окремий застосунок.
+        </div>
+      </div>
+    </div>
 
-<a class="btn btn-live" id="liveLinkCompact" target="_blank">
-ПЕРЕЙТИ В ЕФІР
-</a>
+    <div id="connectedView" class="card hidden">
+      <div class="section-title">✅ Сповіщення увімкнено</div>
+      <p class="section-text">
+        Тепер ти будеш отримувати сповіщення, коли я запускаю ефір.
+      </p>
 
-<div class="row">
-<button class="btn btn-win" id="battleWinBtn">
-ЗАБРАТИ ВІНИ
-</button>
+      <a class="btn btn-live" id="liveLinkCompact" href="#" target="_blank" rel="noopener noreferrer">ПЕРЕЙТИ В ЕФІР</a>
 
-<button class="btn btn-lose" id="battleLoseBtn">
-ВТРАЧАЄМО ВІНИ
-</button>
-</div>
+      <div class="battle-row">
+        <button class="btn btn-win" id="battleWinBtn">ЗАБРАТИ ВІНИ</button>
+        <button class="btn btn-lose" id="battleLoseBtn">ВТРАЧАЄМО ВІНИ</button>
+      </div>
 
-<button class="btn btn-main" id="unsubscribeBtn">
-ВИМКНУТИ СПОВІЩЕННЯ
-</button>
+      <button class="btn btn-primary" id="unsubscribeBtn">ВИМКНУТИ СПОВІЩЕННЯ</button>
+      <button class="btn btn-ghost" id="showGuideBtn">ПОКАЗАТИ ІНСТРУКЦІЮ ЩЕ РАЗ</button>
+    </div>
+  </div>
 
-</div>
+  <script>
+    const PUBLIC_KEY = 'BIPSNPpNdxQaUs6PBPo_IQsD5paX5GgsrCTO7dmPv_osSR_VIvzTHbXhuabkN1qVzdecOUZaQzrTDNjZCXcOaHE';
+    const DEFAULT_LIVE_URL = 'https://vt.tiktok.com/ZS9L7DfHMTgbR-ieGCG/';
+    const ANDROID_APK_URL = 'https://drive.google.com/file/d/12Rj5sxzVdu4KG3gdO8-K4YHGrE5XtyKT/view?usp=sharing';
 
-</div>
+    const statusBox = document.getElementById('status');
+    const subscribeBtn = document.getElementById('subscribeBtn');
+    const installBtn = document.getElementById('installBtn');
+    const unsubscribeBtn = document.getElementById('unsubscribeBtn');
+    const showGuideBtn = document.getElementById('showGuideBtn');
+    const shareBtn = document.getElementById('shareBtn');
 
-<script>
-const PUBLIC_KEY = 'BIPSNPpNdxQaUs6PBPo_IQsD5paX5GgsrCTO7dmPv_osSR_VIvzTHbXhuabkN1qVzdecOUZaQzrTDNjZCXcOaHE';
+    const iphoneTab = document.getElementById('iphoneTab');
+    const androidTab = document.getElementById('androidTab');
+    const iphoneGuide = document.getElementById('iphoneGuide');
+    const androidGuide = document.getElementById('androidGuide');
 
-const statusBox = document.getElementById('status');
-const subscribeBtn = document.getElementById('subscribeBtn');
-const unsubscribeBtn = document.getElementById('unsubscribeBtn');
+    const connectedView = document.getElementById('connectedView');
+    const liveLink = document.getElementById('liveLink');
+    const liveLinkCompact = document.getElementById('liveLinkCompact');
 
-const liveLink = document.getElementById('liveLink');
-const liveLinkCompact = document.getElementById('liveLinkCompact');
+    const battleWinBtn = document.getElementById('battleWinBtn');
+    const battleLoseBtn = document.getElementById('battleLoseBtn');
 
-const connectedView = document.getElementById('connectedView');
+    let deferredPrompt = null;
 
-const battleWinBtn = document.getElementById('battleWinBtn');
-const battleLoseBtn = document.getElementById('battleLoseBtn');
+    function urlBase64ToUint8Array(base64String) {
+      const padding = '='.repeat((4 - base64String.length % 4) % 4);
+      const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+      const rawData = atob(base64);
+      return Uint8Array.from([...rawData].map(char => char.charCodeAt(0)));
+    }
 
-const shareBtn = document.getElementById('shareBtn');
+    function setLiveUrl(url) {
+      const finalUrl = url || DEFAULT_LIVE_URL;
+      liveLink.href = finalUrl;
+      liveLinkCompact.href = finalUrl;
+    }
 
-function urlBase64ToUint8Array(base64String){
-const padding='='.repeat((4-base64String.length%4)%4);
-const base64=(base64String+padding).replace(/-/g,'+').replace(/_/g,'/');
-const rawData=atob(base64);
-return Uint8Array.from([...rawData].map(c=>c.charCodeAt(0)));
-}
+    function showConnected() {
+      connectedView.classList.remove('hidden');
+      localStorage.setItem('liveNotifySubscribed', '1');
+    }
 
-function showConnected(){
-connectedView.classList.remove('hidden');
-localStorage.setItem('sub','1');
-}
+    function showMainView() {
+      connectedView.classList.add('hidden');
+    }
 
-if(localStorage.getItem('sub')==='1'){
-showConnected();
-}
+    function setPlatform(platform) {
+      localStorage.setItem('preferredPlatform', platform);
 
-fetch('/config')
-.then(r=>r.json())
-.then(d=>{
-liveLink.href=d.liveUrl;
-liveLinkCompact.href=d.liveUrl;
-});
+      if (platform === 'iphone') {
+        iphoneTab.classList.add('active');
+        androidTab.classList.remove('active');
+        iphoneGuide.classList.remove('hidden');
+        androidGuide.classList.add('hidden');
+        subscribeBtn.classList.remove('hidden');
+        statusBox.classList.remove('hidden');
+        installBtn.classList.add('hidden');
+      } else {
+        androidTab.classList.add('active');
+        iphoneTab.classList.remove('active');
+        androidGuide.classList.remove('hidden');
+        iphoneGuide.classList.add('hidden');
+        subscribeBtn.classList.add('hidden');
+        statusBox.classList.add('hidden');
+        installBtn.classList.remove('hidden');
+      }
+    }
 
-subscribeBtn.onclick = async () => {
-try{
-const reg = await navigator.serviceWorker.register('/sw.js');
-let sub = await reg.pushManager.getSubscription();
+    async function sendBattle(type) {
+      try {
+        const resp = await fetch('/notify-battle', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ type })
+        });
 
-if(!sub){
-sub = await reg.pushManager.subscribe({
-userVisibleOnly:true,
-applicationServerKey:urlBase64ToUint8Array(PUBLIC_KEY)
-});
-}
+        const data = await resp.json();
 
-await fetch('/subscribe',{
-method:'POST',
-headers:{'Content-Type':'application/json'},
-body:JSON.stringify(sub)
-});
+        if (data.message) {
+          alert(data.message);
+        } else {
+          alert('Щось пішло не так');
+        }
+      } catch (e) {
+        alert('❌ Не вдалося відправити сповіщення');
+      }
+    }
 
-statusBox.innerHTML='✅ Підключено';
-showConnected();
+    fetch('/config')
+      .then(r => r.json())
+      .then(data => setLiveUrl(data && data.liveUrl))
+      .catch(() => setLiveUrl(DEFAULT_LIVE_URL));
 
-}catch(e){
-statusBox.innerHTML='❌ Помилка';
-}
-};
+    const savedPlatform = localStorage.getItem('preferredPlatform') || 'iphone';
+    setPlatform(savedPlatform);
 
-unsubscribeBtn.onclick = () => {
-localStorage.removeItem('sub');
-location.reload();
-};
+    if (localStorage.getItem('liveNotifySubscribed') === '1') {
+      showConnected();
+    }
 
-async function sendBattle(type){
-const r = await fetch('/notify-battle',{
-method:'POST',
-headers:{'Content-Type':'application/json'},
-body:JSON.stringify({type})
-});
-const d = await r.json();
-alert(d.message);
-}
+    iphoneTab.addEventListener('click', () => {
+      showMainView();
+      setPlatform('iphone');
+    });
 
-battleWinBtn.onclick = ()=>sendBattle('win');
-battleLoseBtn.onclick = ()=>sendBattle('lose');
+    androidTab.addEventListener('click', () => {
+      showMainView();
+      setPlatform('android');
+    });
 
-shareBtn.onclick = async ()=>{
-if(navigator.share){
-await navigator.share({
-title:'ARTIK LIVE',
-url:window.location.origin
-});
-}else{
-navigator.clipboard.writeText(window.location.origin);
-alert('Скопійовано');
-}
-};
-</script>
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      if ((localStorage.getItem('preferredPlatform') || 'iphone') === 'android') {
+        installBtn.classList.remove('hidden');
+      }
+    });
 
+    installBtn.addEventListener('click', async () => {
+      if (ANDROID_APK_URL && ANDROID_APK_URL !== 'PASTE_ANDROID_APK_LINK_HERE') {
+        window.open(ANDROID_APK_URL, '_blank');
+        return;
+      }
+
+      if (!deferredPrompt) {
+        alert('Сюди пізніше додамо посилання на APK для Android.');
+        return;
+      }
+
+      deferredPrompt.prompt();
+      const result = await deferredPrompt.userChoice;
+      if (result.outcome === 'accepted') {
+        alert('Застосунок встановлено.');
+      }
+      deferredPrompt = null;
+    });
+
+    subscribeBtn.addEventListener('click', async () => {
+      try {
+        if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+          statusBox.innerHTML = 'На цьому пристрої або в цьому браузері push-сповіщення не підтримуються.';
+          return;
+        }
+
+        const reg = await navigator.serviceWorker.register('/sw.js');
+        let sub = await reg.pushManager.getSubscription();
+
+        if (!sub) {
+          sub = await reg.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: urlBase64ToUint8Array(PUBLIC_KEY)
+          });
+        }
+
+        const resp = await fetch('/subscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(sub)
+        });
+
+        if (!resp.ok) throw new Error('subscribe failed');
+
+        statusBox.innerHTML = '✅ Сповіщення увімкнено.';
+        showConnected();
+      } catch (err) {
+        statusBox.innerHTML = '❌ Не вдалося підключити сповіщення. Відкрий сайт у Safari та спробуй ще раз.';
+      }
+    });
+
+    unsubscribeBtn.addEventListener('click', async () => {
+      try {
+        const reg = await navigator.serviceWorker.getRegistration();
+        if (reg && reg.pushManager) {
+          const sub = await reg.pushManager.getSubscription();
+          if (sub) {
+            await fetch('/unsubscribe', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(sub)
+            });
+            await sub.unsubscribe();
+          }
+        }
+      } catch (err) {}
+
+      localStorage.removeItem('liveNotifySubscribed');
+      location.reload();
+    });
+
+    showGuideBtn.addEventListener('click', () => {
+      showMainView();
+      setPlatform('iphone');
+      statusBox.innerHTML = '✅ Ти вже підключений. За бажанням можеш ще раз подивитися інструкцію.';
+    });
+
+    battleWinBtn.addEventListener('click', () => {
+      sendBattle('win');
+    });
+
+    battleLoseBtn.addEventListener('click', () => {
+      sendBattle('lose');
+    });
+
+    shareBtn.addEventListener('click', async () => {
+      const shareData = {
+        title: 'ARTIK LIVE',
+        text: 'Підключайся до ARTIK LIVE 🔥',
+        url: window.location.origin
+      };
+
+      try {
+        if (navigator.share) {
+          await navigator.share(shareData);
+        } else {
+          await navigator.clipboard.writeText(window.location.origin);
+          alert('Посилання скопійовано ✅');
+        }
+      } catch (e) {}
+    });
+  </script>
 </body>
 </html>

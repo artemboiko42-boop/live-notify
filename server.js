@@ -4,20 +4,76 @@ const webpush = require('web-push');
 const bodyParser = require('body-parser');
 const path = require('path');
 const { GoogleAuth } = require('google-auth-library');
+const { createClient } = require('@supabase/supabase-js');
 
 const app = express();
 app.use(bodyParser.json({ limit: '1mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-let subscriptions = [];
 let lastBattleNotifyAt = 0;
 const BATTLE_COOLDOWN_MS = 5 * 60 * 1000;
+
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY
+);
 
 webpush.setVapidDetails(
   process.env.VAPID_SUBJECT,
   process.env.VAPID_PUBLIC_KEY,
   process.env.VAPID_PRIVATE_KEY
 );
+
+async function getAllSubscriptions() {
+  const { data, error } = await supabase
+    .from('push_subscriptions')
+    .select('endpoint, subscription');
+
+  if (error) throw error;
+  return data || [];
+}
+
+async function saveSubscription(sub) {
+  const { error } = await supabase
+    .from('push_subscriptions')
+    .upsert(
+      {
+        endpoint: sub.endpoint,
+        subscription: sub
+      },
+      { onConflict: 'endpoint' }
+    );
+
+  if (error) throw error;
+}
+
+async function deleteSubscription(endpoint) {
+  const { error } = await supabase
+    .from('push_subscriptions')
+    .delete()
+    .eq('endpoint', endpoint);
+
+  if (error) throw error;
+}
+
+async function sendWebPushToAll(payload) {
+  const rows = await getAllSubscriptions();
+  let sent = 0;
+
+  for (const row of rows) {
+    try {
+      await webpush.sendNotification(row.subscription, payload);
+      sent += 1;
+    } catch (err) {
+      const code = err && err.statusCode;
+      if (code === 404 || code === 410) {
+        await deleteSubscription(row.endpoint);
+      }
+    }
+  }
+
+  return sent;
+}
 
 async function getAccessToken() {
   const auth = new GoogleAuth({
@@ -76,23 +132,39 @@ app.get('/config', (req, res) => {
   res.json({ liveUrl: process.env.LIVE_URL || '' });
 });
 
-app.post('/subscribe', (req, res) => {
-  const sub = req.body;
-  if (!sub || !sub.endpoint) {
-    return res.status(400).json({ ok: false, error: 'Invalid subscription' });
+app.post('/subscribe', async (req, res) => {
+  try {
+    const sub = req.body;
+    if (!sub || !sub.endpoint) {
+      return res.status(400).json({ ok: false, error: 'Invalid subscription' });
+    }
+
+    await saveSubscription(sub);
+    const all = await getAllSubscriptions();
+
+    res.status(201).json({ ok: true, count: all.length });
+  } catch (err) {
+    console.error('subscribe error', err);
+    res.status(500).json({ ok: false, error: 'Failed to save subscription' });
   }
-  const exists = subscriptions.some(item => item.endpoint === sub.endpoint);
-  if (!exists) subscriptions.push(sub);
-  res.status(201).json({ ok: true, count: subscriptions.length });
 });
 
-app.post('/unsubscribe', (req, res) => {
-  const sub = req.body;
-  if (!sub || !sub.endpoint) {
-    return res.json({ ok: true, count: subscriptions.length });
+app.post('/unsubscribe', async (req, res) => {
+  try {
+    const sub = req.body;
+    if (!sub || !sub.endpoint) {
+      const all = await getAllSubscriptions();
+      return res.json({ ok: true, count: all.length });
+    }
+
+    await deleteSubscription(sub.endpoint);
+    const all = await getAllSubscriptions();
+
+    res.json({ ok: true, count: all.length });
+  } catch (err) {
+    console.error('unsubscribe error', err);
+    res.status(500).json({ ok: false, error: 'Failed to remove subscription' });
   }
-  subscriptions = subscriptions.filter(item => item.endpoint !== sub.endpoint);
-  res.json({ ok: true, count: subscriptions.length });
 });
 
 app.post('/notify', async (req, res) => {
@@ -112,17 +184,13 @@ app.post('/notify', async (req, res) => {
     url: finalUrl
   });
 
-  const alive = [];
-  for (const sub of subscriptions) {
-    try {
-      await webpush.sendNotification(sub, payload);
-      alive.push(sub);
-    } catch (err) {
-      const code = err && err.statusCode;
-      if (code !== 404 && code !== 410) alive.push(sub);
-    }
+  let webSubscribers = 0;
+  try {
+    webSubscribers = await sendWebPushToAll(payload);
+  } catch (err) {
+    console.error('web push notify error', err);
+    webSubscribers = 0;
   }
-  subscriptions = alive;
 
   let firebaseOk = true;
   let firebaseResult = null;
@@ -140,7 +208,7 @@ app.post('/notify', async (req, res) => {
 
   res.json({
     ok: true,
-    webSubscribers: subscriptions.length,
+    webSubscribers,
     firebaseOk,
     firebaseResult,
     url: finalUrl
@@ -180,17 +248,13 @@ app.post('/notify-battle', async (req, res) => {
     url: process.env.LIVE_URL
   });
 
-  const alive = [];
-  for (const sub of subscriptions) {
-    try {
-      await webpush.sendNotification(sub, payload);
-      alive.push(sub);
-    } catch (err) {
-      const code = err && err.statusCode;
-      if (code !== 404 && code !== 410) alive.push(sub);
-    }
+  let webSubscribers = 0;
+  try {
+    webSubscribers = await sendWebPushToAll(payload);
+  } catch (err) {
+    console.error('web push battle error', err);
+    webSubscribers = 0;
   }
-  subscriptions = alive;
 
   let firebaseOk = true;
   let firebaseResult = null;
@@ -210,7 +274,7 @@ app.post('/notify-battle', async (req, res) => {
     ok: true,
     cooldown: false,
     message: 'Сповіщення відправлено всім ✅',
-    webSubscribers: subscriptions.length,
+    webSubscribers,
     firebaseOk,
     firebaseResult
   });

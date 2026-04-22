@@ -280,6 +280,62 @@
       font-size: 18px;
     }
 
+    .video-box {
+      margin-top: 18px;
+      background: rgba(10, 19, 48, 0.84);
+      border: 1px solid rgba(84, 109, 171, 0.23);
+      border-radius: 20px;
+      padding: 18px;
+    }
+
+    .video-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .video-top h3 {
+      margin: 0;
+      font-size: 22px;
+    }
+
+    .video-hide-btn {
+      border: none;
+      background: rgba(16, 28, 65, 0.94);
+      border: 1px solid rgba(82, 109, 176, 0.25);
+      color: #fff;
+      border-radius: 14px;
+      padding: 10px 14px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .video-frame {
+      width: 100%;
+      border-radius: 18px;
+      overflow: hidden;
+      background: #000;
+      border: 1px solid rgba(82, 109, 176, 0.25);
+    }
+
+    .video-frame video {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-height: 520px;
+      background: #000;
+    }
+
+    .video-note {
+      color: #bfd0f0;
+      font-size: 15px;
+      line-height: 1.6;
+      margin-top: 10px;
+    }
+
     .hidden {
       display: none !important;
     }
@@ -308,6 +364,11 @@
 
       .battle-row {
         grid-template-columns: 1fr;
+      }
+
+      .video-top {
+        flex-direction: column;
+        align-items: stretch;
       }
     }
   </style>
@@ -370,6 +431,23 @@
         </div>
       </div>
 
+      <div id="iphoneVideoGuide" class="video-box">
+        <div class="video-top">
+          <h3>🎥 Відео-інструкція для iPhone</h3>
+          <button class="video-hide-btn" id="hideVideoGuideBtn">Сховати відео</button>
+        </div>
+
+        <div class="video-frame">
+          <video id="iphoneGuideVideo" controls playsinline preload="metadata">
+            <source src="/iphone-guide.mp4" type="video/mp4">
+          </video>
+        </div>
+
+        <div class="video-note">
+          Якщо інструкція вже не потрібна, ти можеш сховати це відео. Після увімкнення сповіщень воно також сховається автоматично.
+        </div>
+      </div>
+
       <div id="androidGuide" class="info-box hidden">
         <h3>📱 Android</h3>
         <ol>
@@ -413,6 +491,9 @@
     const iphoneGuide = document.getElementById('iphoneGuide');
     const androidGuide = document.getElementById('androidGuide');
 
+    const iphoneVideoGuide = document.getElementById('iphoneVideoGuide');
+    const hideVideoGuideBtn = document.getElementById('hideVideoGuideBtn');
+
     const connectedView = document.getElementById('connectedView');
     const liveLink = document.getElementById('liveLink');
     const liveLinkCompact = document.getElementById('liveLinkCompact');
@@ -438,6 +519,22 @@
       liveLinkCompact.href = finalUrl;
     }
 
+    function showVideoGuide() {
+      if (currentPlatform === 'iphone' && !currentSubscription) {
+        const hiddenByUser = localStorage.getItem('iphoneVideoGuideHidden') === '1';
+        if (!hiddenByUser) {
+          iphoneVideoGuide.classList.remove('hidden');
+        }
+      }
+    }
+
+    function hideVideoGuide(saveChoice = false) {
+      iphoneVideoGuide.classList.add('hidden');
+      if (saveChoice) {
+        localStorage.setItem('iphoneVideoGuideHidden', '1');
+      }
+    }
+
     function updateSubscribeUi(enabled) {
       if (enabled) {
         subscribeBtn.textContent = 'СПОВІЩЕННЯ УВІМКНЕНО';
@@ -445,6 +542,7 @@
         subscribeBtn.classList.add('btn-enabled');
         statusBox.innerHTML = '✅ Сповіщення увімкнено.';
         battleRowTop.classList.remove('hidden');
+        hideVideoGuide(false);
         localStorage.setItem('liveNotifySubscribed', '1');
       } else {
         subscribeBtn.textContent = 'УВІМКНУТИ СПОВІЩЕННЯ';
@@ -453,6 +551,7 @@
         statusBox.innerHTML = 'Ще не підключено.';
         battleRowTop.classList.add('hidden');
         localStorage.removeItem('liveNotifySubscribed');
+        showVideoGuide();
       }
     }
 
@@ -477,6 +576,13 @@
         statusBox.classList.remove('hidden');
         toggleHint.classList.remove('hidden');
         installBtn.classList.add('hidden');
+
+        if (currentSubscription) {
+          battleRowTop.classList.remove('hidden');
+          iphoneVideoGuide.classList.add('hidden');
+        } else {
+          showVideoGuide();
+        }
       } else {
         androidTab.classList.add('active');
         iphoneTab.classList.remove('active');
@@ -486,6 +592,7 @@
         statusBox.classList.add('hidden');
         toggleHint.classList.add('hidden');
         battleRowTop.classList.add('hidden');
+        iphoneVideoGuide.classList.add('hidden');
         installBtn.classList.remove('hidden');
       }
     }
@@ -599,6 +706,10 @@
     androidTab.addEventListener('click', () => {
       showMainView();
       setPlatform('android');
+    });
+
+    hideVideoGuideBtn.addEventListener('click', () => {
+      hideVideoGuide(true);
     });
 
     window.addEventListener('beforeinstallprompt', (e) => {

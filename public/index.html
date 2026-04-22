@@ -336,6 +336,47 @@
       margin-top: 10px;
     }
 
+    .support-popup {
+      margin-top: 16px;
+      background: linear-gradient(180deg, rgba(255, 44, 111, 0.16), rgba(7, 14, 39, 0.92));
+      border: 1px solid rgba(255, 94, 140, 0.28);
+      border-radius: 22px;
+      padding: 18px 16px;
+      box-shadow: 0 18px 40px rgba(255, 36, 92, 0.14);
+      animation: slideDownHint .35s ease;
+    }
+
+    @keyframes slideDownHint {
+      from { opacity: 0; transform: translateY(-14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .support-popup-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+
+    .support-popup-text {
+      color: #f8dce8;
+      font-size: 16px;
+      line-height: 1.55;
+    }
+
+    .support-popup-arrow {
+      margin-top: 10px;
+      font-size: 28px;
+      text-align: center;
+      color: #ff6b9d;
+      animation: arrowBounce 1s infinite;
+    }
+
+    @keyframes arrowBounce {
+      0%, 100% { transform: translateY(0); opacity: .8; }
+      50% { transform: translateY(6px); opacity: 1; }
+    }
+
     /* LOADER */
     #pageLoader {
       position: fixed;
@@ -598,6 +639,14 @@
 
       <div class="status" id="status">Ще не підключено.</div>
 
+      <div id="iphoneSupportPopup" class="support-popup hidden">
+        <div class="support-popup-title">Увага ✨</div>
+        <div class="support-popup-text">
+          Щоб усе запрацювало на iPhone, прочитай інструкцію нижче та подивись відео для налаштування.
+        </div>
+        <div class="support-popup-arrow">↓</div>
+      </div>
+
       <a class="btn btn-live" id="liveLink" href="#" target="_blank" rel="noopener noreferrer">ПЕРЕЙТИ В ЕФІР</a>
 
       <button class="btn btn-share" id="shareBtn">ПОДІЛИТИСЯ З ДРУЗЯМИ 🔗</button>
@@ -674,6 +723,7 @@
     const pageLoader = document.getElementById('pageLoader');
 
     const statusBox = document.getElementById('status');
+    const iphoneSupportPopup = document.getElementById('iphoneSupportPopup');
     const subscribeBtn = document.getElementById('subscribeBtn');
     const installBtn = document.getElementById('installBtn');
     const showGuideBtn = document.getElementById('showGuideBtn');
@@ -722,6 +772,23 @@
       liveLinkCompact.href = finalUrl;
     }
 
+    function showIphoneSupportPopup() {
+      if (currentPlatform === 'iphone') {
+        iphoneSupportPopup.classList.remove('hidden');
+
+        setTimeout(() => {
+          iphoneGuide.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }, 700);
+      }
+    }
+
+    function hideIphoneSupportPopup() {
+      iphoneSupportPopup.classList.add('hidden');
+    }
+
     function showVideoGuide() {
       if (currentPlatform === 'iphone' && !currentSubscription) {
         const hiddenByUser = localStorage.getItem('iphoneVideoGuideHidden') === '1';
@@ -746,6 +813,7 @@
         statusBox.innerHTML = '✅ Сповіщення увімкнено.';
         battleRowTop.classList.remove('hidden');
         hideVideoGuide(false);
+        hideIphoneSupportPopup();
         localStorage.setItem('liveNotifySubscribed', '1');
       } else {
         subscribeBtn.textContent = 'УВІМКНУТИ СПОВІЩЕННЯ';
@@ -783,6 +851,7 @@
         if (currentSubscription) {
           battleRowTop.classList.remove('hidden');
           iphoneVideoGuide.classList.add('hidden');
+          hideIphoneSupportPopup();
         } else {
           showVideoGuide();
         }
@@ -796,6 +865,7 @@
         toggleHint.classList.add('hidden');
         battleRowTop.classList.add('hidden');
         iphoneVideoGuide.classList.add('hidden');
+        hideIphoneSupportPopup();
         installBtn.classList.remove('hidden');
       }
     }
@@ -829,6 +899,7 @@
     async function subscribePush() {
       if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
         statusBox.innerHTML = 'На цьому пристрої або в цьому браузері push-сповіщення не підтримуються.';
+        showIphoneSupportPopup();
         return;
       }
 
@@ -951,6 +1022,7 @@
         }
       } catch (err) {
         statusBox.innerHTML = '❌ Не вдалося змінити стан сповіщень. Відкрий сайт у Safari та спробуй ще раз.';
+        showIphoneSupportPopup();
       }
     });
 

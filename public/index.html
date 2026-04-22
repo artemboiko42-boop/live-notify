@@ -106,42 +106,41 @@
       margin: 0;
     }
 
-
     .telegram-btn {
       background: linear-gradient(90deg, #7c3aed, #ec4899);
       box-shadow:
-        0 0 20px rgba(236, 72, 153, 0.6),
-        0 18px 36px rgba(124, 58, 237, 0.24);
+        0 0 20px rgba(236, 72, 153, 0.55),
+        0 18px 36px rgba(124, 58, 237, 0.28);
       animation: tgBlink 1s infinite alternate;
       margin-bottom: 18px;
     }
 
     @keyframes tgBlink {
       from { transform: scale(1); opacity: 1; }
-      to { transform: scale(1.03); opacity: 0.82; }
+      to { transform: scale(1.04); opacity: .82; }
     }
 
     .telegram-popup {
       position: fixed;
-      bottom: 20px;
       left: 50%;
+      bottom: 20px;
       transform: translateX(-50%);
       width: calc(100% - 32px);
       max-width: 430px;
-      background: linear-gradient(180deg, rgba(14, 10, 33, 0.98), rgba(3, 7, 22, 0.98));
-      border: 1px solid rgba(236, 72, 153, 0.55);
+      padding: 20px 18px 18px;
       border-radius: 24px;
-      padding: 20px;
-      z-index: 99998;
+      background: linear-gradient(180deg, rgba(18, 8, 36, 0.98), rgba(3, 7, 22, 0.98));
+      border: 1px solid rgba(236, 72, 153, 0.58);
       box-shadow:
-        0 0 28px rgba(236, 72, 153, 0.40),
+        0 0 28px rgba(236, 72, 153, 0.35),
         0 0 60px rgba(124, 58, 237, 0.18);
-      animation: tgPopupShow .35s ease;
       backdrop-filter: blur(10px);
+      z-index: 99998;
+      animation: tgPopupShow .35s ease;
     }
 
     @keyframes tgPopupShow {
-      from { opacity: 0; transform: translate(-50%, 35px); }
+      from { opacity: 0; transform: translate(-50%, 34px); }
       to { opacity: 1; transform: translate(-50%, 0); }
     }
 
@@ -153,30 +152,30 @@
       border: none;
       color: #f0abfc;
       font-size: 24px;
-      cursor: pointer;
       line-height: 1;
+      cursor: pointer;
     }
 
     .telegram-popup-title {
+      margin: 0 0 10px;
       font-size: 24px;
       font-weight: 900;
-      margin: 0 0 10px;
       color: #fff;
       text-shadow: 0 0 12px rgba(236, 72, 153, 0.35);
     }
 
     .telegram-popup-text {
+      margin: 0;
       font-size: 17px;
       line-height: 1.6;
       color: #e9d5ff;
-      margin: 0;
     }
 
     .telegram-popup-text strong {
       color: #f472b6;
     }
 
-    .telegram-popup-buttons {
+    .telegram-popup-actions {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
@@ -823,14 +822,13 @@
     </div>
   </div>
 
-
   <div id="tgPopup" class="telegram-popup hidden">
     <button class="telegram-popup-close" id="tgPopupClose" aria-label="Закрити">×</button>
     <h3 class="telegram-popup-title">Ти ще не з нами? 😎</h3>
     <p class="telegram-popup-text">
       Приєднуйся до нашої <strong>Telegram групи</strong> та будь у курсі всіх новин і оновлень!
     </p>
-    <div class="telegram-popup-buttons">
+    <div class="telegram-popup-actions">
       <button class="telegram-popup-btn telegram-popup-hide" id="tgDontDisturbBtn">Більше не турбувати</button>
       <button class="telegram-popup-btn telegram-popup-join" id="tgJoinBtn">Приєднатися</button>
     </div>
@@ -931,7 +929,6 @@
         localStorage.setItem('iphoneVideoGuideHidden', '1');
       }
     }
-
 
     function showTGPopup() {
       if (localStorage.getItem('tgHide') === '1') return;

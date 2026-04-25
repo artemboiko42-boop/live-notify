@@ -13,6 +13,21 @@ app.use(express.static(path.join(__dirname, 'public')));
 let lastBattleNotifyAt = 0;
 const BATTLE_COOLDOWN_MS = 5 * 60 * 1000;
 
+// 🔥 DONATE MEMORY (можно потом в базу)
+let donateQueue = [];     // ожидание
+let donateApproved = [];  // подтвержденные
+
+// 🔥 SUMMING
+function addOrUpdateDonation(name, amount) {
+  const existing = donateApproved.find(d => d.name === name);
+
+  if (existing) {
+    existing.amount += amount;
+  } else {
+    donateApproved.push({ name, amount });
+  }
+}
+
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -23,6 +38,8 @@ webpush.setVapidDetails(
   process.env.VAPID_PUBLIC_KEY,
   process.env.VAPID_PRIVATE_KEY
 );
+
+// ================= PUSH =================
 
 async function getAllSubscriptions() {
   const { data, error } = await supabase
@@ -63,7 +80,7 @@ async function sendWebPushToAll(payload) {
   for (const row of rows) {
     try {
       await webpush.sendNotification(row.subscription, payload);
-      sent += 1;
+      sent++;
     } catch (err) {
       const code = err && err.statusCode;
       if (code === 404 || code === 410) {
@@ -74,6 +91,8 @@ async function sendWebPushToAll(payload) {
 
   return sent;
 }
+
+// ================= FIREBASE =================
 
 async function getAccessToken() {
   const auth = new GoogleAuth({
@@ -96,9 +115,9 @@ async function sendFirebasePush({ title, body, url }) {
     message: {
       topic: 'all',
       data: {
-        title: title || '🔴 ARTIK в ефірі',
-        body: body || 'Натисни, щоб перейти в ефір',
-        url: url || process.env.LIVE_URL || '',
+        title,
+        body,
+        url
       }
     }
   };
@@ -115,14 +134,71 @@ async function sendFirebasePush({ title, body, url }) {
     }
   );
 
-  const text = await response.text();
-
   if (!response.ok) {
-    throw new Error(`FCM error: ${text}`);
+    throw new Error(await response.text());
   }
 
-  return text;
+  return await response.text();
 }
+
+// ================= DONATE API =================
+
+// пользователь отправил "я задонатив"
+app.post('/donate', (req, res) => {
+  const { name, amount, show } = req.body;
+
+  if (!name || !amount) {
+    return res.status(400).json({ ok: false });
+  }
+
+  donateQueue.push({
+    id: Date.now(),
+    name,
+    amount: Number(amount),
+    show: show !== false
+  });
+
+  res.json({ ok: true });
+});
+
+// получить подтвержденные
+app.get('/donations', (req, res) => {
+  res.json(donateApproved);
+});
+
+// админ — список ожидания
+app.get('/admin/donations', (req, res) => {
+  res.json(donateQueue);
+});
+
+// подтвердить донат
+app.post('/admin/approve', (req, res) => {
+  const { id } = req.body;
+
+  const index = donateQueue.findIndex(d => d.id === id);
+  if (index === -1) return res.json({ ok: false });
+
+  const item = donateQueue[index];
+
+  if (item.show) {
+    addOrUpdateDonation(item.name, item.amount);
+  }
+
+  donateQueue.splice(index, 1);
+
+  res.json({ ok: true });
+});
+
+// удалить
+app.post('/admin/delete', (req, res) => {
+  const { id } = req.body;
+
+  donateQueue = donateQueue.filter(d => d.id !== id);
+
+  res.json({ ok: true });
+});
+
+// ================= ROUTES =================
 
 app.get('/admin', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'admin.html'));
@@ -134,151 +210,23 @@ app.get('/config', (req, res) => {
 
 app.post('/subscribe', async (req, res) => {
   try {
-    const sub = req.body;
-    if (!sub || !sub.endpoint) {
-      return res.status(400).json({ ok: false, error: 'Invalid subscription' });
-    }
-
-    await saveSubscription(sub);
-    const all = await getAllSubscriptions();
-
-    res.status(201).json({ ok: true, count: all.length });
+    await saveSubscription(req.body);
+    res.json({ ok: true });
   } catch (err) {
-    console.error('subscribe error', err);
-    res.status(500).json({ ok: false, error: 'Failed to save subscription' });
+    res.status(500).json({ ok: false });
   }
 });
 
 app.post('/unsubscribe', async (req, res) => {
   try {
-    const sub = req.body;
-    if (!sub || !sub.endpoint) {
-      const all = await getAllSubscriptions();
-      return res.json({ ok: true, count: all.length });
-    }
-
-    await deleteSubscription(sub.endpoint);
-    const all = await getAllSubscriptions();
-
-    res.json({ ok: true, count: all.length });
+    await deleteSubscription(req.body.endpoint);
+    res.json({ ok: true });
   } catch (err) {
-    console.error('unsubscribe error', err);
-    res.status(500).json({ ok: false, error: 'Failed to remove subscription' });
+    res.status(500).json({ ok: false });
   }
 });
 
-app.post('/notify', async (req, res) => {
-  const { secret, url, title, body } = req.body || {};
-
-  if (secret !== process.env.ADMIN_SECRET) {
-    return res.status(403).send('Forbidden');
-  }
-
-  const finalUrl = url || process.env.LIVE_URL;
-  const finalTitle = title || '🔴 ARTIK в ефірі';
-  const finalBody = body || 'Натисни, щоб перейти в ефір';
-
-  const payload = JSON.stringify({
-    title: finalTitle,
-    body: finalBody,
-    url: finalUrl
-  });
-
-  let webSubscribers = 0;
-  try {
-    webSubscribers = await sendWebPushToAll(payload);
-  } catch (err) {
-    console.error('web push notify error', err);
-    webSubscribers = 0;
-  }
-
-  let firebaseOk = true;
-  let firebaseResult = null;
-
-  try {
-    firebaseResult = await sendFirebasePush({
-      title: finalTitle,
-      body: finalBody,
-      url: finalUrl,
-    });
-  } catch (err) {
-    firebaseOk = false;
-    firebaseResult = err.message;
-  }
-
-  res.json({
-    ok: true,
-    webSubscribers,
-    firebaseOk,
-    firebaseResult,
-    url: finalUrl
-  });
-});
-
-app.post('/notify-battle', async (req, res) => {
-  const { type } = req.body || {};
-
-  if (type !== 'win' && type !== 'lose') {
-    return res.status(400).json({ ok: false, message: 'Invalid type' });
-  }
-
-  const now = Date.now();
-  const remainingMs = BATTLE_COOLDOWN_MS - (now - lastBattleNotifyAt);
-
-  if (remainingMs > 0) {
-    const remainingMinutes = Math.ceil(remainingMs / 60000);
-    return res.json({
-      ok: false,
-      cooldown: true,
-      message: `Цю дію вже відправили. Спробуй знову приблизно через ${remainingMinutes} хв.`
-    });
-  }
-
-  lastBattleNotifyAt = now;
-
-  const finalTitle = 'ARTIK LIVE';
-  const finalBody =
-    type === 'win'
-      ? 'Потрібно забрати віни 🔥'
-      : 'Втрачаємо віни, заходь зараз ⚡';
-
-  const payload = JSON.stringify({
-    title: finalTitle,
-    body: finalBody,
-    url: process.env.LIVE_URL
-  });
-
-  let webSubscribers = 0;
-  try {
-    webSubscribers = await sendWebPushToAll(payload);
-  } catch (err) {
-    console.error('web push battle error', err);
-    webSubscribers = 0;
-  }
-
-  let firebaseOk = true;
-  let firebaseResult = null;
-
-  try {
-    firebaseResult = await sendFirebasePush({
-      title: finalTitle,
-      body: finalBody,
-      url: process.env.LIVE_URL,
-    });
-  } catch (err) {
-    firebaseOk = false;
-    firebaseResult = err.message;
-  }
-
-  return res.json({
-    ok: true,
-    cooldown: false,
-    message: 'Сповіщення відправлено всім ✅',
-    webSubscribers,
-    firebaseOk,
-    firebaseResult
-  });
-});
+// ================= SERVER =================
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));

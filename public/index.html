@@ -587,6 +587,13 @@
       color: #fff;
       box-shadow: 0 0 18px rgba(249,115,22,.34);
     }
+
+    .donate-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+    }
     .donate-popup-secondary {
       background: rgba(30,41,59,.95);
       color: #fff;
@@ -1071,7 +1078,13 @@
 
     <div class="donate-popup-actions">
       <button class="donate-popup-btn donate-popup-secondary" id="donateDontDisturbBtn">Не показувати</button>
-      <button class="donate-popup-btn donate-popup-main" id="donateLinkBtn">Задонатити</button>
+      <a class="donate-popup-btn donate-popup-main donate-link"
+         id="donateLinkBtn"
+         href="https://send.monobank.ua/jar/9EPLHcYnwW"
+         target="_blank"
+         rel="noopener noreferrer">
+        Задонатити
+      </a>
     </div>
 
     <div class="donate-form">
@@ -1227,11 +1240,7 @@
     }
 
     function openDonateLink() {
-      if (DONATE_URL === 'https://send.monobank.ua/jar/9EPLHcYnwW') {
-        alert('https://send.monobank.ua/jar/9EPLHcYnwW');
-        return;
-      }
-      window.open(DONATE_URL, '_blank');
+      window.open(DONATE_URL, '_blank', 'noopener,noreferrer');
     }
 
     function escapeHtml(value) {
@@ -1502,10 +1511,6 @@
 
     donateDontDisturbBtn.addEventListener('click', () => {
       closeDonatePopup(true);
-    });
-
-    donateLinkBtn.addEventListener('click', () => {
-      openDonateLink();
     });
 
     donateSubmitBtn.addEventListener('click', () => {

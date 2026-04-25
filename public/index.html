@@ -480,6 +480,214 @@
       50% { transform: translateY(6px); opacity: 1; }
     }
 
+
+    .donate-btn {
+      background: linear-gradient(90deg, #f59e0b, #f97316);
+      box-shadow: 0 0 20px rgba(249,115,22,.58), 0 18px 36px rgba(245,158,11,.24);
+      animation: donatePulse 1s infinite alternate;
+      margin-bottom: 18px;
+    }
+    @keyframes donatePulse {
+      from { transform: scale(1); opacity: 1; }
+      to { transform: scale(1.035); opacity: .86; }
+    }
+    .donate-popup {
+      position: fixed;
+      left: 50%;
+      bottom: 20px;
+      transform: translateX(-50%);
+      width: calc(100% - 32px);
+      max-width: 460px;
+      max-height: calc(100vh - 40px);
+      overflow-y: auto;
+      padding: 20px 18px 18px;
+      border-radius: 26px;
+      background:
+        radial-gradient(circle at top left, rgba(249,115,22,.18), transparent 34%),
+        radial-gradient(circle at top right, rgba(236,72,153,.16), transparent 30%),
+        linear-gradient(180deg, rgba(18,8,36,.98), rgba(3,7,22,.98));
+      border: 1px solid rgba(249,115,22,.55);
+      box-shadow: 0 0 28px rgba(249,115,22,.32), 0 0 60px rgba(236,72,153,.16);
+      backdrop-filter: blur(10px);
+      z-index: 99997;
+      animation: donatePopupShow .35s ease;
+    }
+    @keyframes donatePopupShow {
+      from { opacity: 0; transform: translate(-50%, 34px); }
+      to { opacity: 1; transform: translate(-50%, 0); }
+    }
+    .donate-popup-close {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      background: transparent;
+      border: none;
+      color: #fed7aa;
+      font-size: 24px;
+      line-height: 1;
+      cursor: pointer;
+    }
+    .donate-popup-head {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 12px;
+      padding-right: 24px;
+    }
+    .donate-laptop {
+      width: 70px;
+      height: 70px;
+      border-radius: 18px;
+      object-fit: cover;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(249,115,22,.34);
+      box-shadow: 0 0 18px rgba(249,115,22,.22);
+      flex: 0 0 auto;
+    }
+    .donate-popup-title {
+      margin: 0;
+      font-size: 23px;
+      font-weight: 900;
+      color: #fff;
+      text-shadow: 0 0 12px rgba(249,115,22,.35);
+    }
+    .donate-popup-subtitle {
+      margin: 5px 0 0;
+      color: #fed7aa;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    .donate-popup-text {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.6;
+      color: #fff7ed;
+    }
+    .donate-popup-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .donate-popup-btn {
+      border: none;
+      border-radius: 14px;
+      padding: 13px 12px;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform .15s ease, opacity .15s ease;
+    }
+    .donate-popup-btn:hover {
+      transform: translateY(-1px);
+      opacity: .95;
+    }
+    .donate-popup-main {
+      background: linear-gradient(90deg, #f59e0b, #f97316);
+      color: #fff;
+      box-shadow: 0 0 18px rgba(249,115,22,.34);
+    }
+    .donate-popup-secondary {
+      background: rgba(30,41,59,.95);
+      color: #fff;
+      border: 1px solid rgba(148,163,184,.18);
+    }
+    .donate-form {
+      margin-top: 16px;
+      background: rgba(10,19,48,.72);
+      border: 1px solid rgba(249,115,22,.22);
+      border-radius: 20px;
+      padding: 14px;
+    }
+    .donate-form-title {
+      font-size: 16px;
+      font-weight: 900;
+      margin-bottom: 10px;
+      color: #fff;
+    }
+    .donate-input {
+      width: 100%;
+      border: 1px solid rgba(148,163,184,.26);
+      background: rgba(4,7,20,.88);
+      color: #fff;
+      border-radius: 14px;
+      padding: 13px 14px;
+      font-size: 16px;
+      margin-top: 10px;
+      outline: none;
+    }
+    .donate-input:focus {
+      border-color: rgba(249,115,22,.75);
+      box-shadow: 0 0 0 3px rgba(249,115,22,.12);
+    }
+    .donate-check {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-top: 12px;
+      color: #ffedd5;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    .donate-check input {
+      margin-top: 2px;
+      transform: scale(1.1);
+    }
+    .donate-submit {
+      width: 100%;
+      margin-top: 14px;
+      border: none;
+      border-radius: 15px;
+      padding: 14px;
+      background: linear-gradient(90deg, #16a34a, #22c55e);
+      color: #fff;
+      font-size: 16px;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 0 18px rgba(34,197,94,.25);
+    }
+    .donate-message {
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 14px;
+      background: rgba(22,163,74,.14);
+      border: 1px solid rgba(34,197,94,.28);
+      color: #dcfce7;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .donate-list-box {
+      margin-top: 18px;
+      background: rgba(10,19,48,.84);
+      border: 1px solid rgba(249,115,22,.22);
+      border-radius: 20px;
+      padding: 18px;
+    }
+    .donate-list-box h3 {
+      margin: 0 0 12px;
+      font-size: 22px;
+    }
+    .donate-list {
+      display: grid;
+      gap: 10px;
+    }
+    .donate-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 15px;
+      background: rgba(4,7,20,.58);
+      border: 1px solid rgba(148,163,184,.14);
+      color: #fff7ed;
+      font-size: 16px;
+    }
+    .donate-empty {
+      color: #fed7aa;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
     /* LOADER */
     #pageLoader {
       position: fixed;
@@ -725,6 +933,10 @@
         ✈️ TELEGRAM — ПРИЄДНАТИСЯ
       </a>
 
+      <button class="btn donate-btn" id="donateOpenBtn">
+        💻 ДОНАТ НА НОУТБУК
+      </button>
+
       <div class="platform-switch">
         <button class="platform-btn active" id="iphoneTab"> iPhone</button>
         <button class="platform-btn" id="androidTab">🤖 Android</button>
@@ -810,6 +1022,13 @@
       </div>
     </div>
 
+    <div class="donate-list-box">
+      <h3>💻 Підтримали збір на ноутбук</h3>
+      <div class="donate-list" id="donateList">
+        <div class="donate-empty">Поки що список порожній. Після підтвердження донати зʼявляться тут ✨</div>
+      </div>
+    </div>
+
     <div id="connectedView" class="card hidden">
       <div class="section-title">✅ Сповіщення увімкнено</div>
       <p class="section-text">
@@ -834,11 +1053,46 @@
     </div>
   </div>
 
+
+  <div id="donatePopup" class="donate-popup hidden">
+    <button class="donate-popup-close" id="donatePopupClose" aria-label="Закрити">×</button>
+
+    <div class="donate-popup-head">
+      <img class="donate-laptop" src="/laptop.png" alt="Ноутбук">
+      <div>
+        <h3 class="donate-popup-title">Донат на ноутбук 💻</h3>
+        <p class="donate-popup-subtitle">Підтримай стріми та розвиток ARTIK LIVE</p>
+      </div>
+    </div>
+
+    <p class="donate-popup-text">
+      Кожен донат допомагає зробити стріми кращими. Після донату можеш вписати свій нік і суму — після перевірки це зʼявиться на сайті.
+    </p>
+
+    <div class="donate-popup-actions">
+      <button class="donate-popup-btn donate-popup-secondary" id="donateDontDisturbBtn">Не показувати</button>
+      <button class="donate-popup-btn donate-popup-main" id="donateLinkBtn">Задонатити</button>
+    </div>
+
+    <div class="donate-form">
+      <div class="donate-form-title">Я вже задонатив</div>
+      <input class="donate-input" id="donateNameInput" type="text" placeholder="Твій нік">
+      <input class="donate-input" id="donateAmountInput" type="number" min="1" step="1" placeholder="Сума, грн">
+      <label class="donate-check">
+        <input id="donateShowInput" type="checkbox" checked>
+        <span>Показувати мене у списку після підтвердження</span>
+      </label>
+      <button class="donate-submit" id="donateSubmitBtn">Відправити на перевірку</button>
+      <div class="donate-message hidden" id="donateMessage"></div>
+    </div>
+  </div>
+
   <script>
     const PUBLIC_KEY = 'BIPSNPpNdxQaUs6PBPo_IQsD5paX5GgsrCTO7dmPv_osSR_VIvzTHbXhuabkN1qVzdecOUZaQzrTDNjZCXcOaHE';
     const DEFAULT_LIVE_URL = 'https://vt.tiktok.com/@artik_sp/live';
     const ANDROID_APK_URL = 'https://drive.google.com/file/d/12Rj5sxzVdu4KG3gdO8-K4YHGrE5XtyKT/view?usp=sharing';
     const TELEGRAM_URL = 'https://t.me/XXXArtMafia';
+    const DONATE_URL = 'PASTE_MONOBANK_JAR_LINK_HERE';
 
     const pageLoader = document.getElementById('pageLoader');
 
@@ -870,6 +1124,18 @@
     const tgPopupClose = document.getElementById('tgPopupClose');
     const tgDontDisturbBtn = document.getElementById('tgDontDisturbBtn');
     const tgJoinBtn = document.getElementById('tgJoinBtn');
+
+    const donateOpenBtn = document.getElementById('donateOpenBtn');
+    const donatePopup = document.getElementById('donatePopup');
+    const donatePopupClose = document.getElementById('donatePopupClose');
+    const donateDontDisturbBtn = document.getElementById('donateDontDisturbBtn');
+    const donateLinkBtn = document.getElementById('donateLinkBtn');
+    const donateSubmitBtn = document.getElementById('donateSubmitBtn');
+    const donateNameInput = document.getElementById('donateNameInput');
+    const donateAmountInput = document.getElementById('donateAmountInput');
+    const donateShowInput = document.getElementById('donateShowInput');
+    const donateMessage = document.getElementById('donateMessage');
+    const donateList = document.getElementById('donateList');
 
     let deferredPrompt = null;
     let currentPlatform = 'iphone';
@@ -946,6 +1212,91 @@
 
     function joinTelegram() {
       window.open(TELEGRAM_URL, '_blank');
+    }
+
+    function showDonatePopup(force = false) {
+      if (!force && localStorage.getItem('donateHide') === '1') return;
+      donatePopup.classList.remove('hidden');
+    }
+
+    function closeDonatePopup(saveChoice = false) {
+      donatePopup.classList.add('hidden');
+      if (saveChoice) {
+        localStorage.setItem('donateHide', '1');
+      }
+    }
+
+    function openDonateLink() {
+      if (DONATE_URL === 'https://send.monobank.ua/jar/9EPLHcYnwW') {
+        alert('Сюди потрібно вставити посилання на Monobank банку.');
+        return;
+      }
+      window.open(DONATE_URL, '_blank');
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+    }
+
+    async function loadDonations() {
+      try {
+        const resp = await fetch('/donations');
+        if (!resp.ok) return;
+        const items = await resp.json();
+
+        if (!Array.isArray(items) || items.length === 0) {
+          donateList.innerHTML = '<div class="donate-empty">Поки що список порожній. Після підтвердження донати зʼявляться тут ✨</div>';
+          return;
+        }
+
+        donateList.innerHTML = items.map(item => `
+          <div class="donate-item">
+            <strong>${escapeHtml(item.name || 'Анонім')}</strong>
+            <span>${Number(item.amount || 0)} грн</span>
+          </div>
+        `).join('');
+      } catch (e) {}
+    }
+
+    async function submitDonateClaim() {
+      const name = donateNameInput.value.trim();
+      const amount = Number(donateAmountInput.value);
+
+      donateMessage.classList.add('hidden');
+
+      if (!name || !amount || amount <= 0) {
+        donateMessage.textContent = 'Впиши, будь ласка, нік і суму донату.';
+        donateMessage.classList.remove('hidden');
+        return;
+      }
+
+      try {
+        const resp = await fetch('/donate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name,
+            amount,
+            show: donateShowInput.checked
+          })
+        });
+
+        if (!resp.ok) throw new Error('donate failed');
+
+        donateNameInput.value = '';
+        donateAmountInput.value = '';
+
+        donateMessage.textContent = `✅ Дякую! Твій донат на ${amount} грн незабаром зʼявиться на сайті після перевірки.`;
+        donateMessage.classList.remove('hidden');
+      } catch (e) {
+        donateMessage.textContent = '❌ Поки не вдалося відправити. Спробуй ще раз трохи пізніше.';
+        donateMessage.classList.remove('hidden');
+      }
     }
 
     function updateSubscribeUi(enabled) {
@@ -1141,6 +1492,26 @@
       joinTelegram();
     });
 
+    donateOpenBtn.addEventListener('click', () => {
+      showDonatePopup(true);
+    });
+
+    donatePopupClose.addEventListener('click', () => {
+      closeDonatePopup(false);
+    });
+
+    donateDontDisturbBtn.addEventListener('click', () => {
+      closeDonatePopup(true);
+    });
+
+    donateLinkBtn.addEventListener('click', () => {
+      openDonateLink();
+    });
+
+    donateSubmitBtn.addEventListener('click', () => {
+      submitDonateClaim();
+    });
+
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredPrompt = e;
@@ -1216,6 +1587,12 @@
     });
 
     showTGPopup();
+
+    setTimeout(() => {
+      showDonatePopup(false);
+    }, 5200);
+
+    loadDonations();
   </script>
 </body>
 </html>

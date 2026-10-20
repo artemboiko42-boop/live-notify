@@ -94,6 +94,29 @@
     .feature small { display:block; margin-top:5px; color:#aaa5ba; font-size:8px; letter-spacing:.6px; }
     .footer { margin-top:26px; color:rgba(255,255,255,.56); font-size:9px; letter-spacing:2px; font-weight:750; }
     .footer span { color:var(--pink); padding:0 5px; }
+
+    .martin-panel {
+      position:relative; margin-top:25px; padding:15px; overflow:hidden; text-align:left;
+      border:1px solid rgba(255,255,255,.13); border-radius:20px;
+      background:linear-gradient(115deg,rgba(12,15,26,.92),rgba(22,11,25,.88));
+      box-shadow:0 14px 34px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.06);
+      backdrop-filter:blur(16px);
+    }
+    .martin-panel::before { content:""; position:absolute; left:0; top:18px; bottom:18px; width:2px; background:linear-gradient(180deg,var(--cyan),var(--pink)); box-shadow:0 0 14px rgba(53,232,255,.35); }
+    .martin-main { display:flex; align-items:center; gap:13px; }
+    .martin-photo { flex:0 0 82px; width:82px; height:94px; object-fit:cover; object-position:center 35%; border-radius:14px; border:1px solid rgba(255,255,255,.22); box-shadow:0 5px 20px rgba(0,0,0,.3); }
+    .martin-copy { min-width:0; flex:1; }
+    .martin-eyebrow { display:block; color:var(--cyan); font-size:8px; font-weight:900; letter-spacing:1.7px; margin-bottom:6px; }
+    .martin-title { display:block; font-size:21px; line-height:1.1; font-weight:950; letter-spacing:-.3px; }
+    .martin-desc { display:block; margin-top:7px; color:#d4d0df; font-size:11px; line-height:1.55; }
+    .martin-socials { display:block; margin-top:8px; color:#aaa5ba; font-size:8px; letter-spacing:1px; }
+    .martin-action { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:13px; padding-top:12px; border-top:1px solid rgba(255,255,255,.1); }
+    .martin-note { color:#aaa5ba; font-size:9px; letter-spacing:.4px; }
+    .martin-button { display:inline-flex; align-items:center; justify-content:center; gap:9px; flex:0 0 auto; padding:11px 14px; border:1px solid rgba(53,232,255,.45); border-radius:12px; color:#fff; text-decoration:none; font-size:10px; font-weight:900; background:linear-gradient(105deg,rgba(53,232,255,.15),rgba(255,44,118,.18)); box-shadow:inset 0 1px 0 rgba(255,255,255,.08); transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease; }
+    .martin-button:hover { transform:translateY(-2px); border-color:rgba(255,44,118,.7); box-shadow:0 0 22px rgba(53,232,255,.12); }
+    .martin-button:focus-visible { outline:2px solid #fff; outline-offset:3px; }
+    @media (max-width:380px) { .martin-panel { padding:12px; } .martin-photo { flex-basis:70px; width:70px; height:82px; } .martin-title { font-size:18px; } .martin-action { align-items:flex-start; flex-direction:column; } .martin-button { width:100%; } }
+
     @keyframes shine { 0%,60%{left:-40%} 100%{left:135%} }
     @media (min-width:700px) {
       .scene { min-height:100vh; }
@@ -136,6 +159,23 @@
         <span class="arrow" aria-hidden="true">↗</span>
       </a>
       <p class="cta-note">НОВИНИ • СПІЛКУВАННЯ • НАШІ МОМЕНТИ</p>
+
+
+      <section class="martin-panel" aria-label="Блог Мартина">
+        <div class="martin-main">
+          <img class="martin-photo" src="/martin.jpg" alt="Мартин, коргі в бежевому светрику з метеликом" loading="lazy">
+          <div class="martin-copy">
+            <span class="martin-eyebrow">ЗІРКА НА ЧОТИРЬОХ ЛАПАХ 🐾</span>
+            <span class="martin-title">Мартин <span aria-hidden="true">❤️</span></span>
+            <span class="martin-desc">Мій син. Коргі з власним блогом і великим характером.</span>
+            <span class="martin-socials">YOUTUBE&nbsp; · &nbsp;INSTAGRAM&nbsp; · &nbsp;TIKTOK</span>
+          </div>
+        </div>
+        <div class="martin-action">
+          <span class="martin-note">Зазирни в його пухнастий світ</span>
+          <a class="martin-button" href="https://martincorgi.space/" target="_blank" rel="noopener noreferrer">ЗАВІТАТИ ДО МАРТИНА <span aria-hidden="true">↗</span></a>
+        </div>
+      </section>
 
       <div class="feature-row" aria-label="Про спільноту">
         <div class="feature"><span class="feature-icon">◉</span><b>ПРЯМІ ЕФІРИ</b><small>АТМОСФЕРА LIVE</small></div>

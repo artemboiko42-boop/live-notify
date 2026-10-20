@@ -86,38 +86,6 @@
       font-size: 20px;
     }
 
-    /* 🔥 DONATE ADMIN */
-
-    .donate-item {
-      background: rgba(6,12,30,0.9);
-      border: 1px solid rgba(88,113,177,0.3);
-      border-radius: 16px;
-      padding: 14px;
-      margin-top: 10px;
-    }
-
-    .donate-actions {
-      display: flex;
-      gap: 10px;
-      margin-top: 10px;
-    }
-
-    .btn-small {
-      flex: 1;
-      padding: 12px;
-      font-size: 16px;
-      border-radius: 12px;
-      cursor: pointer;
-      border: none;
-    }
-
-    .approve {
-      background: linear-gradient(90deg, #16a34a, #22c55e);
-    }
-
-    .delete {
-      background: linear-gradient(90deg, #ef4444, #f87171);
-    }
   </style>
 </head>
 
@@ -145,12 +113,6 @@
     <div class="status" id="adminStatus">Готово</div>
   </div>
 
-  <!-- 💻 ДОНАТЫ -->
-  <div class="card">
-    <h2>💻 Донати (очікують підтвердження)</h2>
-    <div id="donateList"></div>
-  </div>
-
 </div>
 
 <script>
@@ -176,50 +138,6 @@ document.getElementById('sendBtn').onclick = async () => {
 
   status.innerHTML = '✅ Відправлено';
 };
-
-async function loadDonates() {
-  const res = await fetch('/admin/donations');
-  const data = await res.json();
-
-  const list = document.getElementById('donateList');
-
-  if (!data.length) {
-    list.innerHTML = 'Пусто';
-    return;
-  }
-
-  list.innerHTML = data.map(d => `
-    <div class="donate-item">
-      <b>${d.name}</b> — ${d.amount} грн
-      <div class="donate-actions">
-        <button class="btn-small approve" onclick="approve(${d.id})">Підтвердити</button>
-        <button class="btn-small delete" onclick="removeDonate(${d.id})">Видалити</button>
-      </div>
-    </div>
-  `).join('');
-}
-
-async function approve(id) {
-  await fetch('/admin/approve', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ id })
-  });
-
-  loadDonates();
-}
-
-async function removeDonate(id) {
-  await fetch('/admin/delete', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ id })
-  });
-
-  loadDonates();
-}
-
-loadDonates();
 
 </script>
 

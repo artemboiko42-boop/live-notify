@@ -83,21 +83,21 @@
     .cta-note { margin:12px 0 0; color:#d0cadb; font-size:9px; font-weight:750; letter-spacing:1.6px; text-shadow:0 2px 10px #000; }
     .donate-cta {
       position:relative; display:flex; align-items:center; gap:12px; width:100%; min-height:62px;
-      margin-top:14px; padding:13px 16px; overflow:hidden; border:1px solid rgba(255,125,190,.58);
+      margin-top:14px; padding:13px 16px; overflow:hidden; border:1px solid rgba(255,255,255,.42);
       border-radius:17px; color:#fff; text-align:left; text-decoration:none;
-      background:linear-gradient(105deg,rgba(49,18,42,.94),rgba(34,15,34,.92) 52%,rgba(19,18,34,.95));
-      box-shadow:0 9px 28px rgba(255,44,118,.12),inset 0 1px 0 rgba(255,255,255,.08);
+      background:linear-gradient(105deg,#d51e78 0%,#a62bd0 55%,#643be8 100%);
+      box-shadow:0 8px 28px rgba(213,30,120,.28),inset 0 1px 0 rgba(255,255,255,.2);
       transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease;
     }
     .donate-cta::after { content:""; position:absolute; top:0; bottom:0; left:0; width:3px; background:linear-gradient(180deg,var(--pink),#d6a2ff); box-shadow:0 0 16px rgba(255,44,118,.55); }
     .donate-cta:hover { transform:translateY(-2px); border-color:rgba(255,125,190,.9); box-shadow:0 12px 32px rgba(255,44,118,.2),inset 0 1px 0 rgba(255,255,255,.1); }
     .donate-cta:active { transform:scale(.99); }
     .donate-cta:focus-visible { outline:3px solid white; outline-offset:4px; }
-    .donate-icon { display:grid; place-items:center; flex:0 0 38px; height:38px; border:1px solid rgba(255,125,190,.35); border-radius:13px; color:#ff9ac5; background:rgba(255,44,118,.12); font-size:21px; }
+    .donate-icon { display:grid; place-items:center; flex:0 0 38px; height:38px; border:1px solid rgba(255,255,255,.35); border-radius:13px; color:#fff; background:rgba(255,255,255,.16); font-size:21px; }
     .donate-copy { display:flex; flex:1; min-width:0; flex-direction:column; gap:4px; }
     .donate-title { font-size:clamp(11px,3.2vw,14px); font-weight:950; letter-spacing:.45px; }
-    .donate-subtitle { color:#cfc2d3; font-size:9px; line-height:1.4; letter-spacing:.3px; }
-    .donate-arrow { color:#ff9ac5; font-size:23px; margin-left:auto; }
+    .donate-subtitle { color:rgba(255,255,255,.9); font-size:10px; line-height:1.4; letter-spacing:.2px; }
+    .donate-arrow { color:#fff; font-size:25px; margin-left:auto; }
     .feature-row { display:grid; grid-template-columns:repeat(3,1fr); gap:9px; margin-top:26px; }
     .feature {
       min-height:82px; padding:13px 7px 12px; border:1px solid rgba(255,255,255,.14); border-radius:15px;
@@ -127,10 +127,10 @@
     .martin-title { display:block; font-size:21px; line-height:1.1; font-weight:950; letter-spacing:-.3px; }
     .martin-desc { display:block; margin-top:7px; color:#d4d0df; font-size:11px; line-height:1.55; }
     .martin-socials { display:block; margin-top:8px; color:#aaa5ba; font-size:8px; letter-spacing:1px; }
-    .martin-action { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:13px; padding-top:12px; border-top:1px solid rgba(255,255,255,.1); }
-    .martin-note { color:#aaa5ba; font-size:9px; letter-spacing:.4px; }
-    .martin-button { display:inline-flex; align-items:center; justify-content:center; gap:9px; flex:0 0 auto; padding:11px 14px; border:1px solid rgba(53,232,255,.45); border-radius:12px; color:#fff; text-decoration:none; font-size:10px; font-weight:900; background:linear-gradient(105deg,rgba(53,232,255,.15),rgba(255,44,118,.18)); box-shadow:inset 0 1px 0 rgba(255,255,255,.08); transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease; }
-    .martin-button:hover { transform:translateY(-2px); border-color:rgba(255,44,118,.7); box-shadow:0 0 22px rgba(53,232,255,.12); }
+    .martin-action { display:flex; align-items:stretch; flex-direction:column; gap:10px; margin-top:13px; padding-top:12px; border-top:1px solid rgba(255,255,255,.1); }
+    .martin-note { color:#aaa5ba; font-size:10px; letter-spacing:.4px; text-align:center; }
+    .martin-button { display:inline-flex; align-items:center; justify-content:center; gap:9px; flex:0 0 auto; width:100%; min-height:56px; padding:14px 16px; border:1px solid rgba(255,255,255,.4); border-radius:15px; color:#fff; text-decoration:none; font-size:clamp(11px,3.1vw,14px); font-weight:950; letter-spacing:.25px; background:linear-gradient(105deg,#087f9e 0%,#2359ba 52%,#9c267f 100%); box-shadow:0 8px 26px rgba(53,232,255,.16),inset 0 1px 0 rgba(255,255,255,.18); transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease; }
+    .martin-button:hover { transform:translateY(-2px); border-color:rgba(255,255,255,.8); box-shadow:0 10px 28px rgba(53,232,255,.22); }
     .martin-button:focus-visible { outline:2px solid #fff; outline-offset:3px; }
     @media (max-width:380px) { .martin-panel { padding:12px; } .martin-photo { flex-basis:70px; width:70px; height:82px; } .martin-title { font-size:18px; } .martin-action { align-items:flex-start; flex-direction:column; } .martin-button { width:100%; } }
 
@@ -186,19 +186,19 @@
         <span class="donate-arrow" aria-hidden="true">↗</span>
       </a>
 
-      <section class="martin-panel" aria-label="Блог Мартина">
+      <section class="martin-panel" aria-label="Блог Мартіна">
         <div class="martin-main">
-          <img class="martin-photo" src="/martin.jpg" alt="Мартин, коргі в бежевому светрику з метеликом" loading="lazy">
+          <img class="martin-photo" src="/martin.jpg" alt="Мартін, коргі в бежевому светрику з метеликом" loading="lazy">
           <div class="martin-copy">
             <span class="martin-eyebrow">ЗІРКА НА ЧОТИРЬОХ ЛАПАХ 🐾</span>
-            <span class="martin-title">Мартин <span aria-hidden="true">❤️</span></span>
+            <span class="martin-title">Мартін <span aria-hidden="true">❤️</span></span>
             <span class="martin-desc">Мій син. Коргі з власним блогом і великим характером.</span>
             <span class="martin-socials">YOUTUBE&nbsp; · &nbsp;INSTAGRAM&nbsp; · &nbsp;TIKTOK</span>
           </div>
         </div>
         <div class="martin-action">
           <span class="martin-note">Зазирни в його пухнастий світ</span>
-          <a class="martin-button" href="https://martincorgi.space/" target="_blank" rel="noopener noreferrer">ЗАВІТАТИ ДО МАРТИНА <span aria-hidden="true">↗</span></a>
+          <a class="martin-button" href="https://martincorgi.space/" target="_blank" rel="noopener noreferrer">ЗАВІТАТИ ДО МАРТІНА <span aria-hidden="true">↗</span></a>
         </div>
       </section>
 

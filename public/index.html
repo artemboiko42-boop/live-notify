@@ -58,7 +58,7 @@
     }
     .kicker::before { content:""; width:17px; height:1px; background:var(--cyan); box-shadow:0 0 8px var(--cyan); }
     h1 { margin:0; line-height:.79; text-transform:uppercase; letter-spacing:-.075em; font-size:clamp(66px,18vw,124px); font-weight:1000; }
-    .name { display:block; color:#fff; text-shadow:0 4px 35px rgba(0,0,0,.4); }
+    .name { display:block; color:#fff; text-shadow:0 4px 35px rgba(0,0,0,.4),0 0 26px rgba(255,255,255,.18); }
     .live {
       display:block; margin-top:12px; color:transparent;
       background:linear-gradient(100deg,var(--cyan) 2%,#fff 38%,#ff9ac5 63%,var(--pink) 92%);
@@ -94,7 +94,36 @@
     .feature small { display:block; margin-top:5px; color:#aaa5ba; font-size:8px; letter-spacing:.6px; }
     .footer { margin-top:26px; color:rgba(255,255,255,.56); font-size:9px; letter-spacing:2px; font-weight:750; }
     .footer span { color:var(--pink); padding:0 5px; }
+    /* Кінематографічні неонові ефекти без декоративних частинок */
+    .scene::before {
+      content:""; position:absolute; z-index:-1; inset:-20%; pointer-events:none;
+      background:conic-gradient(from 210deg at 50% 36%, transparent 0deg,rgba(53,232,255,.0) 24deg,rgba(53,232,255,.23) 31deg,transparent 39deg,transparent 120deg,rgba(255,44,118,.25) 132deg,transparent 142deg,transparent 210deg,rgba(53,232,255,.18) 222deg,transparent 232deg);
+      mix-blend-mode:screen; opacity:.85; animation:rays 16s linear infinite;
+    }
+    .scene::after {
+      content:""; position:absolute; z-index:-1; inset:-2px; pointer-events:none;
+      border:1px solid rgba(53,232,255,.12); border-radius:28px;
+      box-shadow:inset 18px 0 70px rgba(255,44,118,.07),inset -18px 0 70px rgba(53,232,255,.08);
+      opacity:.9;
+    }
+    .backdrop img { animation:portraitGlow 7s ease-in-out infinite alternate; }
+    .ambient { opacity:.42; animation:ambientPulse 5s ease-in-out infinite alternate; }
+    .ambient.b { animation-delay:-2.5s; }
+    .brand-mark { animation:markPulse 2.4s ease-in-out infinite; }
+    .live { animation:livePulse 2.2s ease-in-out infinite alternate; }
+    .cta { animation:buttonPulse 3s ease-in-out infinite; }
+    .feature { transition:transform .25s ease,border-color .25s ease,box-shadow .25s ease; }
+    .feature:nth-child(odd) { animation:cardFloat 4s ease-in-out infinite; }
+    .feature:nth-child(2) { animation:cardFloat 4s ease-in-out -2s infinite; }
     @keyframes shine { 0%,60%{left:-40%} 100%{left:135%} }
+    @keyframes rays { from { transform:rotate(0deg) scale(1.05); } to { transform:rotate(360deg) scale(1.05); } }
+    @keyframes portraitGlow { from { filter:saturate(.95) contrast(1.08) drop-shadow(0 0 0 rgba(53,232,255,0)); } to { filter:saturate(1.18) contrast(1.13) drop-shadow(0 0 22px rgba(53,232,255,.22)); } }
+    @keyframes ambientPulse { from { opacity:.24; transform:scale(.9); } to { opacity:.58; transform:scale(1.15); } }
+    @keyframes markPulse { 0%,100% { box-shadow:0 0 15px rgba(53,232,255,.28),inset 0 0 8px rgba(53,232,255,.08); } 50% { box-shadow:0 0 32px rgba(53,232,255,.85),inset 0 0 15px rgba(53,232,255,.2); } }
+    @keyframes livePulse { from { filter:drop-shadow(0 0 10px rgba(255,44,118,.32)); transform:scale(1); } to { filter:drop-shadow(0 0 30px rgba(53,232,255,.7)); transform:scale(1.025); } }
+    @keyframes buttonPulse { 0%,100% { box-shadow:0 12px 38px rgba(22,143,255,.3),0 0 28px rgba(255,44,118,.22),inset 0 1px 0 rgba(255,255,255,.32); } 50% { box-shadow:0 12px 48px rgba(22,143,255,.55),0 0 46px rgba(255,44,118,.48),inset 0 1px 0 rgba(255,255,255,.45); } }
+    @keyframes cardFloat { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-4px); } }
+
     @media (min-width:700px) {
       .scene { min-height:100vh; }
       .backdrop img { object-position:center 30%; }

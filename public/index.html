@@ -81,6 +81,28 @@
     .telegram-icon { display:grid; place-items:center; flex:0 0 34px; height:34px; border-radius:50%; background:rgba(255,255,255,.18); font-size:20px; }
     .arrow { margin-left:auto; font-size:23px; }
     .cta-note { margin:12px 0 0; color:#d0cadb; font-size:9px; font-weight:750; letter-spacing:1.6px; text-shadow:0 2px 10px #000; }
+
+    .birthday-banner {
+      position:relative; margin:0 0 18px; padding:10px 10px 12px; overflow:hidden;
+      border:1px solid rgba(240,171,252,.55); border-radius:20px; text-align:center;
+      background:radial-gradient(ellipse at 0% 0%,rgba(53,232,255,.16),transparent 48%),
+                 radial-gradient(ellipse at 100% 100%,rgba(255,44,118,.2),transparent 52%),
+                 linear-gradient(125deg,rgba(18,19,34,.96),rgba(35,15,38,.94));
+      box-shadow:0 10px 34px rgba(213,30,120,.16),inset 0 1px 0 rgba(255,255,255,.09);
+      animation:birthdayGlow 3.8s ease-in-out infinite alternate;
+    }
+    .birthday-banner[hidden] { display:none!important; }
+    .birthday-cake { display:block; width:100%; aspect-ratio:1.965 / 1; object-fit:cover; object-position:center; border-radius:14px; margin:0 0 12px; background:#05050a; }
+    .birthday-topline { display:flex; align-items:center; justify-content:space-between; gap:8px; margin:0 5px 9px; }
+    .birthday-label { color:#f0abfc; font-size:9px; font-weight:950; letter-spacing:2px; }
+    .birthday-date { color:#67e8f9; font-size:9px; font-weight:900; letter-spacing:1px; }
+    .birthday-heading { margin:0; color:#fff; font-size:clamp(23px,6vw,32px); font-weight:1000; line-height:1.05; letter-spacing:-.8px; }
+    .birthday-heading span { color:#f0abfc; text-shadow:0 0 18px rgba(240,171,252,.28); }
+    .birthday-copy { margin:9px 5px 14px; color:#e4dce9; font-size:12px; line-height:1.55; }
+    .birthday-button { display:flex; align-items:center; justify-content:center; gap:10px; min-height:50px; width:100%; padding:13px 15px; border:1px solid rgba(255,255,255,.45); border-radius:14px; color:#fff; text-decoration:none; font-size:12px; font-weight:950; letter-spacing:.6px; background:linear-gradient(100deg,#d51e78,#9f2fce 58%,#3a6be8); box-shadow:0 7px 22px rgba(213,30,120,.22),inset 0 1px 0 rgba(255,255,255,.18); transition:transform .2s ease,filter .2s ease; }
+    .birthday-button:hover { transform:translateY(-2px); filter:brightness(1.12); }
+    .birthday-button:focus-visible { outline:3px solid white; outline-offset:3px; }
+    @keyframes birthdayGlow { from { box-shadow:0 8px 25px rgba(213,30,120,.13),inset 0 1px 0 rgba(255,255,255,.08); } to { box-shadow:0 10px 34px rgba(53,232,255,.18),0 0 20px rgba(213,30,120,.12),inset 0 1px 0 rgba(255,255,255,.1); } }
     .donate-cta {
       position:relative; display:flex; align-items:center; gap:12px; width:100%; min-height:62px;
       margin-top:14px; padding:13px 16px; overflow:hidden; border:1px solid rgba(255,255,255,.42);
@@ -170,6 +192,20 @@
       <h1><span class="name">ARTIK</span><span class="live">LIVE</span></h1>
       <p class="tagline">БІЛЬШЕ НІЖ ЕФІРИ.<br><strong>ЦЕ НАША СПІЛЬНОТА.</strong></p>
 
+
+      <section class="birthday-banner" id="birthdayBanner" aria-label="Привітання з днем народження" hidden>
+        <img class="birthday-cake" src="/birthday-cake.jpg" alt="Святковий шоколадний торт із неоновими свічками">
+        <div class="birthday-topline">
+          <span class="birthday-label">SPECIAL BIRTHDAY EDITION ✦</span>
+          <span class="birthday-date">23–25 ЖОВТНЯ</span>
+        </div>
+        <h2 class="birthday-heading">IT’S MY <span>BIRTHDAY</span> 🎂</h2>
+        <p class="birthday-copy">Хочеш привітати мене з днем народження? Твоя увага — вже подарунок, а якщо захочеш зробити ще й донат, буду дуже вдячний! ❤️</p>
+        <a class="birthday-button" href="https://send.monobank.ua/jar/2PHqut1EbM" target="_blank" rel="noopener noreferrer">
+          <span aria-hidden="true">🎁</span><span>ПРИВІТАТИ ARTIK</span><span aria-hidden="true">↗</span>
+        </a>
+      </section>
+
       <a class="cta" href="https://t.me/XXXArtMafia" target="_blank" rel="noopener noreferrer">
         <span class="telegram-icon" aria-hidden="true">➤</span>
         <span>ПРИЄДНАТИСЯ ДО TELEGRAM</span>
@@ -211,5 +247,18 @@
       <footer class="footer"><span>✦</span> ARTIK LIVE <span>✦</span> УКРАЇНСЬКА СПІЛЬНОТА</footer>
     </section>
   </main>
+
+  <script>
+    (() => {
+      const parts = new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'Europe/Kyiv', month: 'numeric', day: 'numeric'
+      }).formatToParts(new Date());
+      const month = Number(parts.find(part => part.type === 'month')?.value);
+      const day = Number(parts.find(part => part.type === 'day')?.value);
+      const banner = document.getElementById('birthdayBanner');
+      // Святковий банер доступний зараз і до 25 жовтня включно.
+      if (banner && month === 10 && day >= 20 && day <= 25) banner.hidden = false;
+    })();
+  </script>
 </body>
 </html>

@@ -1,3 +1,4 @@
+
 require('dotenv').config();
 const express = require('express');
 const webpush = require('web-push');
@@ -12,20 +13,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 let lastBattleNotifyAt = 0;
 const BATTLE_COOLDOWN_MS = 5 * 60 * 1000;
-
-// ================= DONATE SYSTEM =================
-
-let donateQueue = [];
-let donateApproved = [];
-
-function addOrUpdateDonation(name, amount) {
-  const existing = donateApproved.find(d => d.name === name);
-  if (existing) {
-    existing.amount += amount;
-  } else {
-    donateApproved.push({ name, amount });
-  }
-}
 
 // ================= SUPABASE =================
 
@@ -144,58 +131,6 @@ async function sendFirebasePush({ title, body, url }) {
   return text;
 }
 
-// ================= DONATE API =================
-
-app.post('/donate', (req, res) => {
-  const { name, amount, show } = req.body;
-
-  if (!name || !amount) {
-    return res.status(400).json({ ok: false });
-  }
-
-  donateQueue.push({
-    id: Date.now(),
-    name,
-    amount: Number(amount),
-    show: show !== false
-  });
-
-  res.json({ ok: true });
-});
-
-app.get('/donations', (req, res) => {
-  res.json(donateApproved);
-});
-
-app.get('/admin/donations', (req, res) => {
-  res.json(donateQueue);
-});
-
-app.post('/admin/approve', (req, res) => {
-  const { id } = req.body;
-
-  const index = donateQueue.findIndex(d => d.id === id);
-  if (index === -1) return res.json({ ok: false });
-
-  const item = donateQueue[index];
-
-  if (item.show) {
-    addOrUpdateDonation(item.name, item.amount);
-  }
-
-  donateQueue.splice(index, 1);
-
-  res.json({ ok: true });
-});
-
-app.post('/admin/delete', (req, res) => {
-  const { id } = req.body;
-
-  donateQueue = donateQueue.filter(d => d.id !== id);
-
-  res.json({ ok: true });
-});
-
 // ================= ROUTES =================
 
 app.get('/admin', (req, res) => {
@@ -210,7 +145,10 @@ app.post('/subscribe', async (req, res) => {
   try {
     const sub = req.body;
     if (!sub || !sub.endpoint) {
-      return res.status(400).json({ ok: false, error: 'Invalid subscription' });
+      return res.status(400).json({
+        ok: false,
+        error: 'Invalid subscription'
+      });
     }
 
     await saveSubscription(sub);
@@ -219,7 +157,10 @@ app.post('/subscribe', async (req, res) => {
     res.status(201).json({ ok: true, count: all.length });
   } catch (err) {
     console.error('subscribe error', err);
-    res.status(500).json({ ok: false, error: 'Failed to save subscription' });
+    res.status(500).json({
+      ok: false,
+      error: 'Failed to save subscription'
+    });
   }
 });
 
@@ -237,11 +178,15 @@ app.post('/unsubscribe', async (req, res) => {
     res.json({ ok: true, count: all.length });
   } catch (err) {
     console.error('unsubscribe error', err);
-    res.status(500).json({ ok: false, error: 'Failed to remove subscription' });
+    res.status(500).json({
+      ok: false,
+      error: 'Failed to remove subscription'
+    });
   }
 });
 
-// 💥 ВСЁ УВЕДОМЛЕНИЯ СОХРАНЕНЫ
+// ================= NOTIFICATIONS =================
+
 app.post('/notify', async (req, res) => {
   const { secret, url, title, body } = req.body || {};
 
@@ -294,7 +239,10 @@ app.post('/notify-battle', async (req, res) => {
   const { type } = req.body || {};
 
   if (type !== 'win' && type !== 'lose') {
-    return res.status(400).json({ ok: false, message: 'Invalid type' });
+    return res.status(400).json({
+      ok: false,
+      message: 'Invalid type'
+    });
   }
 
   const now = Date.now();
